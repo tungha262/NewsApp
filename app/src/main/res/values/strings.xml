@@ -4,4 +4,10 @@
     <string name="title1">Cập nhật mọi tin nóng,</string>
     <string name="title2">mọi lúc mọi nơi</string>
     <string name="mainTitle">Tin mới</string>
+    <string name="login">Đăng nhập</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forgot_password"><b>Quên mật khẩu</b></string>
+    <string name="intro_register"><b>Bạn chưa có tài khoản?<u> Đăng ký ngay</u></b>  </string>
+
 </resources>
