@@ -11,7 +11,9 @@ import com.example.newsapp.presentation.base.BaseFragment
 
 class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
-    override fun initUi() {}
+    override fun initUi() {
+
+    }
     override fun initListener() {}
 
 }
