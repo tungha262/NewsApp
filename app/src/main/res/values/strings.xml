@@ -9,5 +9,10 @@
     <string name="password">Mật khẩu</string>
     <string name="forgot_password"><b>Quên mật khẩu</b></string>
     <string name="intro_register"><b>Bạn chưa có tài khoản?<u> Đăng ký ngay</u></b>  </string>
+    <string name="sign_up">Tạo tài khoản</string>
+    <string name="name">Họ và tên</string>
+    <string name="btn_sign_up">Đăng ký</string>
+    <string name="intro_login"><b>Bạn đã có tài khoản?<u> Đăng nhập</u></b>  </string>
+
 
 </resources>
