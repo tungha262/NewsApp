@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import com.example.newsapp.presentation.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding::inflate) {
     override fun initListener() {
 

@@ -13,6 +13,7 @@
     <string name="name">Họ và tên</string>
     <string name="btn_sign_up">Đăng ký</string>
     <string name="intro_login"><b>Bạn đã có tài khoản?<u> Đăng nhập</u></b>  </string>
+    <string name="load">Đang xử lý...</string>
 
 
 </resources>

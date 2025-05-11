@@ -13,7 +13,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
         setUpBottomNav()
     }
+
 
     fun setUpBottomNav() {
         val navHostFragment =
@@ -45,12 +48,11 @@ class MainActivity : AppCompatActivity() {
                 arguments: Bundle?
             ) {
                 when (destination.id) {
-                    R.id.splashFragment, R.id.signInFragment -> {
+                    R.id.splashFragment, R.id.signInFragment, R.id.signUpFragment -> {
                         binding.bottomNavView.visibility = View.GONE
                     }
                     else -> binding.bottomNavView.visibility = View.VISIBLE
                 }
-
             }
         })
 
