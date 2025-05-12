@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.ActivityMainBinding
+import com.example.newsapp.utils.InputCheckField
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,7 +50,8 @@ class MainActivity : AppCompatActivity() {
                 arguments: Bundle?
             ) {
                 when (destination.id) {
-                    R.id.splashFragment, R.id.signInFragment, R.id.signUpFragment -> {
+                    R.id.splashFragment, R.id.signInFragment,
+                    R.id.signUpFragment, R.id.forgotPasswordFragment -> {
                         binding.bottomNavView.visibility = View.GONE
                     }
                     else -> binding.bottomNavView.visibility = View.VISIBLE

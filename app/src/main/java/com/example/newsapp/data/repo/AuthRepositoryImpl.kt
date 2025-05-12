@@ -94,4 +94,23 @@ class AuthRepositoryImpl @Inject constructor(
             return Resource.Failed(error)
         }
     }
+
+    override suspend fun resetPassword(email: String): Resource<String> {
+        if (!NetworkConfig.isInternetConnected(context)) {
+            return Resource.Failed("Không có kết nối mạng!")
+        }
+
+        when {
+            email.isEmpty() -> return Resource.Failed("Vui lòng nhập email!")
+            !(InputCheckField.isValidEmail(email)) -> return Resource.Failed("Email không đúng định dạng!")
+        }
+
+        try {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email).await()
+            return Resource.Success("Đã gửi email đặt lại mật khẩu! Vui lòng kiểm tra hộp thư đến.")
+        }catch (e: Exception){
+            return Resource.Failed("Có lỗi đã xảy ra. Vui lòng kiểm tra lại thông tin!")
+        }
+
+    }
 }

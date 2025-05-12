@@ -1,6 +1,5 @@
 package com.example.newsapp.presentation.ui.component.auth
 
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
@@ -20,7 +19,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
     override fun initListener() {
         binding.apply {
             tvForgotPassword.setOnClickListener {
-
+                findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
             }
 
             tvSignUp.setOnClickListener {

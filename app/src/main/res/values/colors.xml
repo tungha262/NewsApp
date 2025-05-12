@@ -5,4 +5,5 @@
     <color name="text_color">#212121</color>
     <color name="text_auth_color">#3F51B5</color>
     <color name="gray">#d9d9d9</color>
+    <color name="btn_color">#4775d1</color>
 </resources>

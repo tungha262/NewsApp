@@ -9,7 +9,6 @@ import com.example.newsapp.domain.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,11 +18,15 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
+
     private var _loginState = MutableLiveData<Resource<String>>()
     val loginState : LiveData<Resource<String>> get() = _loginState
 
     private val _signupState = MutableSharedFlow<Resource<String>>()
     val signupState: SharedFlow<Resource<String>> get() = _signupState
+
+    private val _resetPasswordState = MutableSharedFlow<Resource<String>>()
+    val resetPasswordState: SharedFlow<Resource<String>> get() = _resetPasswordState
 
     fun login(email:String, password:String){
         viewModelScope.launch {
@@ -42,4 +45,11 @@ class AuthViewModel @Inject constructor(
             _signupState.emit(authRepository.signup(name, email, password))
         }
     }
+
+    fun resetPassword(email: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            _resetPasswordState.emit(authRepository.resetPassword(email))
+        }
+    }
+
 }
