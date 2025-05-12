@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         setUpBottomNav()
     }
 
-
     fun setUpBottomNav() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
