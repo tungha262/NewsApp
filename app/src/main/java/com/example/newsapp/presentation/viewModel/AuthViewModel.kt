@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.domain.repo.AuthRepository
 import com.example.newsapp.domain.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +20,10 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private var _loginState = MutableLiveData<Resource<String>>()
-    val loginState : LiveData<Resource<String>> = _loginState
+    val loginState : LiveData<Resource<String>> get() = _loginState
+
+    private val _signupState = MutableSharedFlow<Resource<String>>()
+    val signupState: SharedFlow<Resource<String>> get() = _signupState
 
     fun login(email:String, password:String){
         viewModelScope.launch {
@@ -28,6 +34,12 @@ class AuthViewModel @Inject constructor(
                     is Resource.Failed -> _loginState.value = Resource.Failed(rs.message)
                 }
             }
+        }
+    }
+
+    fun signup(name:String, email: String, password: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            _signupState.emit(authRepository.signup(name, email, password))
         }
     }
 }

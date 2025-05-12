@@ -1,13 +1,16 @@
 package com.example.newsapp.data.repo
 
 import android.content.Context
+import com.example.newsapp.data.local.SharedPreferenceHelper
 import com.example.newsapp.domain.repo.AuthRepository
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
+import com.example.newsapp.utils.InputCheckField
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,8 +21,10 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val context: Context,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val sharedPreferenceHelper: SharedPreferenceHelper
 ) : AuthRepository {
+
     override fun login(
         email: String,
         password: String
@@ -50,9 +55,43 @@ class AuthRepositoryImpl @Inject constructor(
                 is FirebaseAuthInvalidCredentialsException -> {
                     emit(Resource.Failed("Tài khoản hoặc mật khẩu không chính xác!"))
                 }
+
                 else -> emit(Resource.Failed(e.message.toString()))
             }
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun signup(name: String, email: String, password: String): Resource<String> {
+        if (!NetworkConfig.isInternetConnected(context)) {
+            return Resource.Failed("Không có kết nối mạng!")
+        }
+
+        when {
+            name.isEmpty() -> return Resource.Failed("Vui lòng nhập tên!")
+            name.length <3 -> return Resource.Failed("Tên phải từ 3 kí tự trở lên!")
+            email.isEmpty() -> return Resource.Failed("Vui lòng nhập email!")
+            password.isBlank() -> return Resource.Failed("Vui lòng nhập mật khẩu!")
+            !InputCheckField.isValidEmail(email) -> return Resource.Failed("Email không đúng định dạng!")
+            !InputCheckField.isValidPassword(password) -> return Resource.Failed("Mật khẩu phải từ 6 kí tự trở lên!")
+        }
+
+        try {
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            val userId = result.user?.uid
+            if (userId != null) {
+                sharedPreferenceHelper.setUserId(userId)
+                sharedPreferenceHelper.setEmail(email)
+                return Resource.Success("Đăng ký thành công!")
+            }
+            else{
+                return Resource.Failed("Đăng ký thất bại, Vui lòng thử lại!")
+            }
+        } catch (e: Exception) {
+            val error = when (e) {
+                is FirebaseAuthUserCollisionException -> "Email đã tồn tại, vui lòng thử lại!"
+                else -> "Có lỗi đã xảy ra. Vui lòng kiểm tra lại thông tin!"
+            }
+            return Resource.Failed(error)
+        }
+    }
 }

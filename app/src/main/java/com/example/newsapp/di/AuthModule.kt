@@ -1,6 +1,7 @@
 package com.example.newsapp.di
 
 import android.content.Context
+import com.example.newsapp.data.local.SharedPreferenceHelper
 import com.example.newsapp.data.repo.AuthRepositoryImpl
 import com.example.newsapp.domain.repo.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -17,15 +18,18 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth() : FirebaseAuth{
+    fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
 
     @Provides
     @Singleton
-    fun provideAuthRepository(@ApplicationContext context: Context, auth: FirebaseAuth): AuthRepository{
-        return AuthRepositoryImpl(context ,auth)
+    fun provideAuthRepository(
+        @ApplicationContext context: Context,
+        auth: FirebaseAuth,
+        sharedPreferenceHelper: SharedPreferenceHelper
+    ): AuthRepository {
+        return AuthRepositoryImpl(context, auth, sharedPreferenceHelper)
     }
-
 
 }
