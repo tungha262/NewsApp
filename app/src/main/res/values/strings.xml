@@ -16,6 +16,10 @@
     <string name="load">Đang xử lý...</string>
     <string name="intro_forgot_password">Nhập địa chỉ email của bạn và chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.</string>
     <string name="get_password">Lấy lại mật khẩu</string>
+    <string name="source">Source</string>
+    <string name="title">TITLE</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="date_time">DATE TIME</string>
 
 
 </resources>

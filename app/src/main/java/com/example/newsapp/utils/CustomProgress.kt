@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.view.Gravity
 import com.example.newsapp.R
 
+@Suppress("DEPRECATION")
 class CustomProgress {
     companion object{
         private var progressDialog: ProgressDialog? = null

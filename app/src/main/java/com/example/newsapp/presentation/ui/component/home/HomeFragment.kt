@@ -19,11 +19,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             tab.text = when(pos){
                 0 -> "Mới nhất"
                 1 -> "Thế giới"
-                2 -> "Chính trị"
-                3 -> "Kinh tế"
-                4 -> "Công nghệ"
-                5 -> "Sức khỏe"
-                6 -> "Thể thao"
+                2 -> "Kinh tế"
+                3 -> "Công nghệ"
+                4 -> "Sức khỏe"
+                5 -> "Thể thao"
                 else -> "Giải trí"
             }
         }.attach()
@@ -33,9 +32,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     }
 
-    override fun observerViewModel() {
-        super.observerViewModel()
-
-    }
 
 }
