@@ -16,30 +16,31 @@ class RemoteViewModel @Inject constructor(
     private val remoteRepository: RemoteRepository
 ) : ViewModel() {
 
-    private val nextPageMap = mutableMapOf<String, String?>()
-    private val articleMap = mutableMapOf<String, MutableList<Article>>()
-    private val isLastPageMap = mutableMapOf<String, Boolean>()
+    private var nextPageMap = mutableMapOf<String, String?>()
+    private var articleMap = mutableMapOf<String, MutableList<Article>>()
+    private var isLastPageMap = mutableMapOf<String, Boolean>()
 
     private val _articles = MutableLiveData<Resource<List<Article>>>()
     val article: LiveData<Resource<List<Article>>> get() = _articles
 
     fun getArticles(category: String) {
         viewModelScope.launch {
-            val nextPage = nextPageMap[category]
-            val cachedArticles = articleMap[category] ?: mutableListOf()
 
-            // Nếu đã có dữ liệu và không có trang tiếp theo => không cần gọi lại
-            if (cachedArticles.isNotEmpty() && isLastPageMap[category] == true) {
-                _articles.value = Resource.Success(cachedArticles)
+            val nextPage = nextPageMap[category]
+            val currentArticles = articleMap[category] ?: mutableListOf()
+
+            if (currentArticles.isNotEmpty() && isLastPageMap[category] == true) {
+                _articles.value = Resource.Success(currentArticles)
                 return@launch
             }
 
             remoteRepository.getArticles(category, nextPage).collect { rs ->
                 when (rs) {
                     is Resource.Loading -> _articles.value = Resource.Loading
+
                     is Resource.Success -> {
                         val newArticles = rs.data.results
-                        val updatedList = cachedArticles.toMutableList().apply {
+                        val updatedList = currentArticles.toMutableList().apply {
                             addAll(newArticles)
                         }
 
@@ -55,6 +56,18 @@ class RemoteViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+
+    fun refreshCategory(category: String) {
+        nextPageMap.remove(category)
+        articleMap.remove(category)
+        isLastPageMap.remove(category)
+        getArticles(category)
+    }
+
+    fun getCurrentData(category: String) : List<Article>{
+        return articleMap[category] ?: emptyList()
     }
 
 }

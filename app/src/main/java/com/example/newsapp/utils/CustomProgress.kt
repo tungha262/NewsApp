@@ -18,6 +18,8 @@ class CustomProgress {
                 setContentView(R.layout.dialog_progress)
                 window?.apply {
                     setBackgroundDrawableResource(android.R.color.transparent)
+                    clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    setDimAmount(0f)
                     val params = attributes
                     params.gravity = Gravity.CENTER
                     attributes = params

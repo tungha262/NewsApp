@@ -2,6 +2,7 @@ package com.example.newsapp.network
 
 
 import android.content.Context
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -15,8 +16,8 @@ class NetworkConnectionInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!NetworkConfig.isInternetConnected(context)) {
             throw IOException()
+            TimeUnit.MILLISECONDS.sleep(500)
         }
-        TimeUnit.MILLISECONDS.sleep(1000)
         return chain.proceed(chain.request())
     }
 }

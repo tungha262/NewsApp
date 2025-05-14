@@ -8,7 +8,7 @@ class Constant {
         const val CATEGORY = "category"
 
         const val BASE_URL = "https://newsdata.io/"
-        const val API_KEY = "pub_81448c5919e6efe8abe35cc5b5175bde93c66"
+        const val API_KEY = "pub_8144855234a3902a72ce36c5e1102d81bff09"
         const val COUNTRY = "vi"
         const val QUERY_PAGE_SIZE = "20"
     }

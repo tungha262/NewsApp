@@ -32,10 +32,15 @@ class CustomToast(context: Context) : Toast(context) {
             }
             toast.apply {
                 view = layout
-                duration = LENGTH_SHORT
                 setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 100)
             }
             return toast
+        }
+        fun showCustomToastShort(context: Context, type: Int, message: String) {
+            val toast = makeText(context, type, message)
+            toast.show()
+
+            android.os.Handler().postDelayed({ toast.cancel() }, 500) // 500ms
         }
     }
 

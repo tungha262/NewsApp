@@ -7,11 +7,11 @@ import com.example.newsapp.presentation.ui.component.category.CategoryFragment
 import com.example.newsapp.utils.Constant
 
 class NewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
-
     private val categories = listOf(
         "top", "world", "business", "technology",
         "health", "sports", "entertainment"
     )
+
     override fun createFragment(position: Int): Fragment {
         val category = categories[position]
         return CategoryFragment().apply {
@@ -24,4 +24,5 @@ class NewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
         return categories.size
     }
+
 }
