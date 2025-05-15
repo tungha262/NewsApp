@@ -3,6 +3,7 @@ package com.example.newsapp.presentation.ui.component.category
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.ArticleItemBinding
 import com.example.newsapp.databinding.FragmentCategoryBinding
@@ -20,7 +21,10 @@ class CategoryAdapter : BaseAdapter<ArticleItemBinding, Article>() {
             articleSource.text = item.sourceName
             articleDescription.text = item.description
             articleDateTime.text = FormatDateTime.format(item.pubDate.toString())
-            Glide.with(root).load(item.imageUrl).into(articleImage)
+            Glide.with(root)
+                .load(item.imageUrl)
+                .error(R.drawable.default_image)
+                .into(articleImage)
         }
     }
 

@@ -9,7 +9,7 @@ import androidx.viewbinding.ViewBinding
 abstract class BaseAdapter<VB : ViewBinding, T : Any> :
     RecyclerView.Adapter<BaseAdapter.BaseViewHolder<VB>>() {
 
-    private var list: List<T> = listOf()
+    private var list: MutableList<T> = mutableListOf()
     private var onItemClickListener: ((item: T) -> Unit)? = null
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -42,9 +42,16 @@ abstract class BaseAdapter<VB : ViewBinding, T : Any> :
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<T>) {
-        this.list = data
+        this.list = data.toMutableList()
         notifyDataSetChanged()
     }
+
+    fun appendData(newData: List<T>) {
+        val oldSize = list.size
+        list.addAll(newData)
+        notifyItemRangeInserted(oldSize, newData.size)
+    }
+
 
     fun setOnItemClickListener(listener: (item: T) -> Unit) {
         this.onItemClickListener = listener

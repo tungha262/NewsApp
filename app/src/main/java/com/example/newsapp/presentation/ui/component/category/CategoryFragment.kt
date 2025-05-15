@@ -1,9 +1,11 @@
 package com.example.newsapp.presentation.ui.component.category
 
 import android.util.Log
+import android.widget.AbsListView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.databinding.FragmentCategoryBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
@@ -17,32 +19,22 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryBinding::inflate) {
+
     private val viewModel: RemoteViewModel by viewModels()
     private var category: String = "top"
     private lateinit var adapter: CategoryAdapter
 
     private var networkDialog: DialogNetworkError? = null
     private var isFragmentVisible: Boolean = false
+    private var isLoadingMore = false
+    private var isLastPage = false
 
-    override fun onResume() {
-        super.onResume()
-        isFragmentVisible = true
-        if (NetworkConfig.isInternetConnected(requireContext())) {
-            if (viewModel.getCurrentData(category).isEmpty()) {
-                viewModel.getArticles(category)
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isFragmentVisible = false
-    }
 
     override fun initUi() {
         category = arguments?.getString(Constant.CATEGORY) ?: "top"
         Log.d("tung", category)
         adapter = CategoryAdapter()
+        binding.rcvCategory.adapter = adapter
 
         binding.rcvCategory.apply {
             addItemDecoration(
@@ -57,6 +49,8 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
     }
 
     override fun initListener() {
+
+        //Refresh layout
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
             val hasNetwork = NetworkConfig.isInternetConnected(requireContext())
@@ -73,7 +67,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
 
             } else {
                 binding.swipeRefreshLayout.isRefreshing = false
-                if (isFragmentVisible  && networkDialog == null) {
+                if (isFragmentVisible && networkDialog == null) {
                     networkDialog = DialogNetworkError {
                         viewModel.refreshCategory(category)
                     }
@@ -81,6 +75,47 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                 }
             }
         }
+
+        // keo recyclerView
+        binding.rcvCategory.apply {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(
+                    recyclerView: RecyclerView,
+                    dx: Int,
+                    dy: Int
+                ) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layout = layoutManager as LinearLayoutManager
+                    val visibleItem = layout.childCount
+                    val totalItem = layout.itemCount
+                    val firstItem = layout.findFirstVisibleItemPosition()
+
+                    val isAtEnd = firstItem + visibleItem >= totalItem
+                    val isScrollingDown = dy > 0
+
+                    val shouldLoad = !isLoadingMore && !isLastPage && firstItem >= 0
+                            && isAtEnd && isScrollingDown
+
+                    if (shouldLoad) {
+                        if (NetworkConfig.isInternetConnected(requireContext())) {
+                            isLoadingMore = true
+                            viewModel.getArticles(category)
+                        } else {
+                            if (isFragmentVisible && networkDialog == null) {
+                                Log.d("tung", "$category - dialog error")
+                                networkDialog = DialogNetworkError {
+                                    viewModel.refreshCategory(category)
+                                }
+                                networkDialog!!.show(childFragmentManager, "DialogNetworkError")
+                            }
+                        }
+                    }
+                }
+            })
+
+        }
+
+
     }
 
     override fun observerViewModel() {
@@ -90,8 +125,9 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             when (rs) {
                 is Resource.Failed -> {
                     CustomProgress.hide()
+                    isLoadingMore = false
                     if (!NetworkConfig.isInternetConnected(requireContext())) {
-                        if (isFragmentVisible  && networkDialog == null) {
+                        if (isFragmentVisible && networkDialog == null) {
                             Log.d("tung", "$category - dialog error")
                             networkDialog = DialogNetworkError {
                                 viewModel.refreshCategory(category)
@@ -110,7 +146,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                 }
 
                 is Resource.Loading -> {
-                    if(!binding.swipeRefreshLayout.isRefreshing){
+                    if (!binding.swipeRefreshLayout.isRefreshing && !isLoadingMore) {
                         CustomProgress.show(requireActivity())
                     }
                 }
@@ -124,8 +160,20 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                         dialog.dismiss()
                         networkDialog = null
                     }
-                    adapter.setData(rs.data)
-                    binding.rcvCategory.adapter = adapter
+                    isLoadingMore = false
+                    isLastPage = rs.data.isEmpty()
+
+                    val currentData = adapter.itemCount
+                    val newData = rs.data
+
+                    if (currentData == 0) {
+                        adapter.setData(newData)
+                    } else if (newData.size > currentData) {
+                        val moreItems = newData.subList(currentData, newData.size)
+                        adapter.appendData(moreItems)
+                    }
+
+                    Log.d("tung", "setData $category")
                     for (i in rs.data) {
                         Log.d("tung", i.toString())
                     }
@@ -133,5 +181,20 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentVisible = true
+        if (NetworkConfig.isInternetConnected(requireContext())) {
+            if (viewModel.getCurrentData(category).isEmpty()) {
+                viewModel.getArticles(category)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isFragmentVisible = false
     }
 }

@@ -20,8 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private lateinit var adapter: NewPagerAdapter
 
-    private val viewModel: RemoteViewModel by viewModels()
-
     override fun initUi() {
         adapter = NewPagerAdapter(this)
         binding.viewPager2.adapter = adapter
