@@ -1,6 +1,7 @@
 package com.example.newsapp.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Article(
@@ -16,4 +17,4 @@ data class Article(
     @SerializedName("source_name") var sourceName: String? = null,
     @SerializedName("source_icon") var sourceIcon: String? = null,
     @SerializedName("language") var language: String? = null,
-)
+) : Serializable

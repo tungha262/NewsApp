@@ -3,13 +3,17 @@ package com.example.newsapp.presentation.ui.component.category
 import android.util.Log
 import android.widget.AbsListView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentCategoryBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
 import com.example.newsapp.presentation.base.BaseFragment
+import com.example.newsapp.presentation.ui.component.home.HomeFragmentDirections
 import com.example.newsapp.presentation.viewModel.RemoteViewModel
 import com.example.newsapp.utils.Constant
 import com.example.newsapp.utils.DialogNetworkError
@@ -29,10 +33,9 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
     private var isLoadingMore = false
     private var isLastPage = false
 
-
     override fun initUi() {
         category = arguments?.getString(Constant.CATEGORY) ?: "top"
-        Log.d("tung", category)
+        Log.d("tung", "$category init ui")
         adapter = CategoryAdapter()
         binding.rcvCategory.adapter = adapter
 
@@ -45,7 +48,12 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             )
             layoutManager = LinearLayoutManager(requireContext())
         }
-        viewModel.getArticles(category)
+        if (NetworkConfig.isInternetConnected(requireContext())) {
+            if (viewModel.getCurrentData(category).isEmpty()) {
+                Log.d("tung", "call api")
+                viewModel.getArticles(category)
+            }
+        }
     }
 
     override fun initListener() {
@@ -56,19 +64,23 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             val hasNetwork = NetworkConfig.isInternetConnected(requireContext())
 
             if (hasNetwork) {
+
                 if (viewModel.getCurrentData(category).isEmpty()) {
-                    viewModel.refreshCategory(category)
+                    Log.d("tung", "Refresh with no data")
                     viewModel.getArticles(category)
+                    binding.swipeRefreshLayout.isRefreshing = false
                 } else {
                     binding.swipeRefreshLayout.postDelayed({
                         binding.swipeRefreshLayout.isRefreshing = false
                     }, 1000)
+
                 }
 
             } else {
                 binding.swipeRefreshLayout.isRefreshing = false
                 if (isFragmentVisible && networkDialog == null) {
                     networkDialog = DialogNetworkError {
+                        Log.d("tung", "Refresh data network error")
                         viewModel.refreshCategory(category)
                     }
                     networkDialog!!.show(childFragmentManager, "DialogNetworkError")
@@ -99,6 +111,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                     if (shouldLoad) {
                         if (NetworkConfig.isInternetConnected(requireContext())) {
                             isLoadingMore = true
+                            Log.d("tung", "Load more")
                             viewModel.getArticles(category)
                         } else {
                             if (isFragmentVisible && networkDialog == null) {
@@ -112,19 +125,25 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                     }
                 }
             })
-
         }
 
-
+        // set onItemClick
+        binding.apply {
+            adapter.setOnItemClickListener { item ->
+                val action =
+                    HomeFragmentDirections.actionHomeFragmentToArticleFragment(item, category)
+                findNavController().navigate(action)
+            }
+        }
     }
 
     override fun observerViewModel() {
         super.observerViewModel()
-        binding.swipeRefreshLayout.isRefreshing = false
         viewModel.article.observe(viewLifecycleOwner) { rs ->
             when (rs) {
                 is Resource.Failed -> {
                     CustomProgress.hide()
+                    binding.swipeRefreshLayout.isRefreshing = false
                     isLoadingMore = false
                     if (!NetworkConfig.isInternetConnected(requireContext())) {
                         if (isFragmentVisible && networkDialog == null) {
@@ -152,6 +171,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                 }
 
                 is Resource.Success -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     CustomProgress.hide()
                     val dialog =
                         childFragmentManager.findFragmentByTag("DialogNetworkError") as? DialogNetworkError
@@ -172,12 +192,8 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                         val moreItems = newData.subList(currentData, newData.size)
                         adapter.appendData(moreItems)
                     }
-
                     Log.d("tung", "setData $category")
-                    for (i in rs.data) {
-                        Log.d("tung", i.toString())
-                    }
-
+                    Log.d("tung", rs.data.size.toString())
                 }
             }
         }
@@ -186,11 +202,12 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
     override fun onResume() {
         super.onResume()
         isFragmentVisible = true
-        if (NetworkConfig.isInternetConnected(requireContext())) {
-            if (viewModel.getCurrentData(category).isEmpty()) {
-                viewModel.getArticles(category)
-            }
-        }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        CustomToast.makeText(requireContext(), CustomToast.FAILED, "destroy cate")
     }
 
     override fun onPause() {

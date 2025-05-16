@@ -1,5 +1,6 @@
 package com.example.newsapp.presentation.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.domain.repo.RemoteRepository
 import com.example.newsapp.domain.state.Resource
+import com.google.firebase.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +26,7 @@ class RemoteViewModel @Inject constructor(
     val article: LiveData<Resource<List<Article>>> get() = _articles
 
     fun getArticles(category: String) {
+        Log.d("tung", "viewModel getArticles")
         viewModelScope.launch {
 
             val nextPage = nextPageMap[category]

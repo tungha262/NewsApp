@@ -102,7 +102,14 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation("com.google.firebase:firebase-auth")
 
+
+    // swiperefreshlayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Chrome tabs
+    implementation ("androidx.browser:browser:1.5.0")
+
+
 
     
 }
