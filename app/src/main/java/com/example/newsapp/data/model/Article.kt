@@ -1,10 +1,18 @@
 package com.example.newsapp.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 
+@Entity(
+    tableName = "articles"
+)
 data class Article(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
+
     @SerializedName("article_id") var articleId: String,
     @SerializedName("title") var title: String? = null,
     @SerializedName("link") var link: String? = null,

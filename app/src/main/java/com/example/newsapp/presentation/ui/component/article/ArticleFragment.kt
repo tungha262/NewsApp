@@ -46,6 +46,10 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
             findNavController().popBackStack()
         }
 
+        binding.btnFavorite.setOnClickListener {
+
+        }
+
         binding.scrollView.apply {
             viewTreeObserver.addOnScrollChangedListener {
                 val scrollY = scrollY
