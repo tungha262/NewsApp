@@ -12,7 +12,6 @@ import java.io.Serializable
 data class Article(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
-
     @SerializedName("article_id") var articleId: String,
     @SerializedName("title") var title: String? = null,
     @SerializedName("link") var link: String? = null,

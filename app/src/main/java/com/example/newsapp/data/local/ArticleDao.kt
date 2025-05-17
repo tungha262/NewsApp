@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.newsapp.data.model.Article
-import com.example.newsapp.domain.state.Resource
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,5 +22,8 @@ interface ArticleDao {
 
     @Query("DELETE FROM articles")
     suspend fun deleteAllFavoriteArticle()
+
+    @Query("SELECT EXISTS (SELECT 1 FROM articles WHERE articleId=:id)")
+    fun findArticleById(id: String) : Flow<Boolean>
 
 }

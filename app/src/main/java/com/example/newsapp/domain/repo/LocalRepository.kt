@@ -13,4 +13,6 @@ interface LocalRepository {
 
     suspend fun deleteAllFavoriteArticle(): Resource<String>
 
+    suspend fun findArticleById(id :String) : Flow<Boolean>
+
 }
