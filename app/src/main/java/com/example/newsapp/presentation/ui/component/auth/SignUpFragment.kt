@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSignUpBinding
@@ -26,7 +27,13 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
 
     override fun initListener() {
         binding.tvLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            findNavController().navigate(
+                R.id.action_signUpFragment_to_signInFragment,
+                null,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.signUpFragment, true)
+                    .build()
+            )
         }
         binding.btnSignUp.setOnClickListener {
             binding.apply {

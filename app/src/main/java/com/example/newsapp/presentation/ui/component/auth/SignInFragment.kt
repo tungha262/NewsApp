@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.ui.component.auth
 
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSignInBinding
@@ -21,7 +22,6 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
             tvForgotPassword.setOnClickListener {
                 findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
             }
-
             tvSignUp.setOnClickListener {
                 findNavController().navigate(R.id.action_signInFragment_to_signUpFragment, null)
             }
@@ -49,11 +49,19 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
                 is Resource.Success -> {
                     CustomProgress.hide()
                     CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
+                    findNavController().navigate(
+                        R.id.action_signInFragment_to_homeFragment,
+                        null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.signInFragment, true)
+                            .build()
+                    )
                 }
 
                 is Resource.Failed -> {
                     CustomProgress.hide()
                     CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()
+
                 }
             }
         }

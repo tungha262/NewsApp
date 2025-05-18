@@ -6,6 +6,7 @@ import com.example.newsapp.data.local.ArticleDao
 import com.example.newsapp.data.local.ArticleDataBase
 import com.example.newsapp.data.repo.LocalRepositoryImpl
 import com.example.newsapp.domain.repo.LocalRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,8 +36,8 @@ object RoomModule {
 
     @Provides
     @Singleton
-    fun provideLocalRepository(dao: ArticleDao) : LocalRepository{
-        return LocalRepositoryImpl(dao)
+    fun provideLocalRepository(dao: ArticleDao, auth: FirebaseAuth) : LocalRepository{
+        return LocalRepositoryImpl(dao,auth)
     }
 
 }

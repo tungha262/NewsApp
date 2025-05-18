@@ -1,10 +1,7 @@
 package com.example.newsapp.presentation.ui.component.favorite
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,16 +10,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentFavoriteBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.LocalViewModel
 import com.example.ui_news.util.CustomToast
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 
 @AndroidEntryPoint
@@ -39,18 +35,19 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
             showAlertDialogDeleteAll()
         }
         binding.apply {
-            favoriteAdapter.setOnItemClickListener{ item ->
-                val action = FavoriteFragmentDirections.actionFavoriteFragmentToArticleFragment(item,
+            favoriteAdapter.setOnItemClickListener { item ->
+                val action = FavoriteFragmentDirections.actionFavoriteFragmentToArticleFragment(
+                    item,
                     item.category[0]
                 )
                 findNavController().navigate(action)
-
             }
         }
     }
 
     override fun initUi() {
         localViewModel.getAllFavoriteArticle()
+        Log.d("tung", "get All  FavoriteArticle ${FirebaseAuth.getInstance().currentUser?.uid}")
         favoriteAdapter = FavoriteAdapter()
         binding.rcvListFavorite.apply {
             adapter = favoriteAdapter
@@ -91,42 +88,43 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
                     favoriteAdapter.setData(data)
                 }
             }
+        }
 
-            lifecycleScope.launch {
-                localViewModel.deleteFavoriteArticle.collect { state ->
-                    when (state) {
-                        is Resource.Failed -> {
-                            CustomToast.makeText(
-                                requireContext(),
-                                CustomToast.FAILED,
-                                state.message
-                            ).show()
-                        }
-                        Resource.Loading -> {}
-                        is Resource.Success -> {
-                            CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data)
-                                .show()
-                        }
+        lifecycleScope.launch {
+            localViewModel.deleteFavoriteArticle.collect { state ->
+                when (state) {
+                    is Resource.Failed -> {
+                        CustomToast.makeText(
+                            requireContext(),
+                            CustomToast.FAILED,
+                            state.message
+                        ).show()
+                    }
+
+                    Resource.Loading -> {}
+                    is Resource.Success -> {
+                        CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data)
+                            .show()
                     }
                 }
             }
+        }
 
-            lifecycleScope.launch {
-                localViewModel.deleteAllFavoriteArticle.collect { state ->
-                    when (state) {
-                        is Resource.Failed -> {
-                            CustomToast.makeText(
-                                requireContext(),
-                                CustomToast.FAILED,
-                                state.message
-                            ).show()
-                        }
+        lifecycleScope.launch {
+            localViewModel.deleteAllFavoriteArticle.collect { state ->
+                when (state) {
+                    is Resource.Failed -> {
+                        CustomToast.makeText(
+                            requireContext(),
+                            CustomToast.FAILED,
+                            state.message
+                        ).show()
+                    }
 
-                        Resource.Loading -> {}
-                        is Resource.Success -> {
-                            CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data)
-                                .show()
-                        }
+                    Resource.Loading -> {}
+                    is Resource.Success -> {
+                        CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data)
+                            .show()
                     }
                 }
             }
@@ -140,6 +138,10 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
             .setPositiveButton("Có") { _, _ ->
                 lifecycleScope.launch {
                     localViewModel.deleteAllFavoriteArticle()
+                    Log.d(
+                        "tung",
+                        "delete All FavoriteArticle ${FirebaseAuth.getInstance().currentUser?.uid}"
+                    )
                 }
             }
             .setNegativeButton("Không", null)
@@ -153,16 +155,20 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
             .setPositiveButton("Có") { _, _ ->
                 lifecycleScope.launch {
                     localViewModel.deleteFavoriteArticle(article)
+                    Log.d(
+                        "tung",
+                        "delete Favorite Article ${FirebaseAuth.getInstance().currentUser?.uid}"
+                    )
+
                 }
             }
             .setNegativeButton("Không") { _, _ ->
-                // Khôi phục lại item bị vuốt
                 favoriteAdapter.notifyItemChanged(position)
             }
             .setOnCancelListener {
-                // Trong trường hợp người  bấm ra ngoài dialog mà không chọn gì
                 favoriteAdapter.notifyItemChanged(position)
             }
+
             .show()
     }
 

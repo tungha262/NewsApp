@@ -14,16 +14,15 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFavoriteArticle(article: Article)
 
-    @Query("SELECT * FROM articles ORDER BY pubDate ASC")
-    fun getAllFavoriteArticle() : Flow<List<Article>>
+    @Query("SELECT * FROM articles WHERE userId = :userId ORDER BY pubDate ASC")
+    fun getAllFavoriteArticle(userId: String): Flow<List<Article>>
 
-    @Delete
-    suspend fun deleteFavoriteArticle(article: Article)
+    @Query("DELETE FROM articles WHERE articleId = :articleId AND userId = :userId")
+    suspend fun deleteFavoriteArticle(articleId: String, userId: String)
 
-    @Query("DELETE FROM articles")
-    suspend fun deleteAllFavoriteArticle()
+    @Query("DELETE FROM articles WHERE userId = :userId")
+    suspend fun deleteAllFavoriteArticle(userId: String)
 
-    @Query("SELECT EXISTS (SELECT 1 FROM articles WHERE articleId=:id)")
-    fun findArticleById(id: String) : Flow<Boolean>
-
+    @Query("SELECT EXISTS (SELECT 1 FROM articles WHERE articleId = :id AND userId = :userId)")
+    fun findArticleById(id: String, userId: String): Flow<Boolean>
 }

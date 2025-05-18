@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentArticleBinding
 import com.example.newsapp.domain.state.Resource
@@ -19,11 +20,15 @@ import com.example.newsapp.presentation.viewModel.LocalViewModel
 import com.example.newsapp.utils.DialogNetworkError
 import com.example.newsapp.utils.FormatDateTime
 import com.example.ui_news.util.CustomToast
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBinding::inflate) {
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     private var lastScrollY = 0
     private var buttonsVisible = true
@@ -34,6 +39,8 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
     private var isArticleExist = false
 
     private val localViewModel: LocalViewModel by viewModels()
+
+
 
     override fun observerViewModel() {
         super.observerViewModel()
@@ -78,6 +85,7 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
         }
 
         binding.btnFavorite.setOnClickListener {
+            val currentUser = firebaseAuth.currentUser
             if (!NetworkConfig.isInternetConnected(requireContext())) {
                 networkError = DialogNetworkError {
                     if (NetworkConfig.isInternetConnected(requireContext())) {
@@ -88,7 +96,14 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                 networkError?.show(childFragmentManager, "DialogNetworkError")
             } else {
                 Log.d("tung", "call localViewModel add favorite")
-                localViewModel.addFavoriteArticle(article)
+                if(currentUser!= null){
+                    localViewModel.addFavoriteArticle(article)
+                    Log.d("tung", "add favorite ${currentUser.uid}")
+                }
+
+                else{
+                    findNavController().navigate(R.id.action_articleFragment_to_signInFragment)
+                }
             }
         }
 

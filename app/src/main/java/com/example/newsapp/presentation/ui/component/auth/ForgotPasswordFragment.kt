@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentForgotPasswordBinding
@@ -44,7 +45,13 @@ class ForgotPasswordFragment : BaseFragment<FragmentForgotPasswordBinding>
                 when(state){
                     is Resource.Success -> {
                         CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
-                        findNavController().navigate(R.id.action_forgotPasswordFragment_to_signInFragment)
+                        findNavController().navigate(
+                            R.id.action_forgotPasswordFragment_to_signInFragment,
+                            null,
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.forgotPasswordFragment, true)
+                                .build()
+                        )
                     }
                     is Resource.Failed -> {
                         CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()
