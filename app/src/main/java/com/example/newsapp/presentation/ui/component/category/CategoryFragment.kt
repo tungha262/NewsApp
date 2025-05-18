@@ -2,6 +2,7 @@ package com.example.newsapp.presentation.ui.component.category
 
 import android.util.Log
 import android.widget.AbsListView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -48,6 +49,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             )
             layoutManager = LinearLayoutManager(requireContext())
         }
+
         if (NetworkConfig.isInternetConnected(requireContext())) {
             if (viewModel.getCurrentData(category).isEmpty()) {
                 Log.d("tung", "call api")
@@ -201,13 +203,9 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
 
     override fun onResume() {
         super.onResume()
+        Log.d("tung", "resume $category")
+        Log.d("tung", "${viewModel.getCurrentData(category).size} - size $category")
         isFragmentVisible = true
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        CustomToast.makeText(requireContext(), CustomToast.FAILED, "destroy cate")
     }
 
     override fun onPause() {

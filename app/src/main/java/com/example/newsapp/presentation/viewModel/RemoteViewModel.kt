@@ -61,7 +61,6 @@ class RemoteViewModel @Inject constructor(
         }
     }
 
-
     fun refreshCategory(category: String) {
         nextPageMap.remove(category)
         articleMap.remove(category)

@@ -17,6 +17,7 @@ data class Article(
     @SerializedName("link") var link: String? = null,
     @SerializedName("description") var description: String? = null,
     @SerializedName("content") var content: String? = null,
+    @SerializedName("category") var category: List<String> = listOf(),
     @SerializedName("pubDate") var pubDate: String? = null,
     @SerializedName("pubDateTZ") var pubDateTZ: String? = null,
     @SerializedName("image_url") var imageUrl: String? = null,

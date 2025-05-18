@@ -30,8 +30,7 @@ class LocalViewModel @Inject constructor(
 
     private var _deleteAllFavoriteArticle = MutableSharedFlow<Resource<String>>()
     val deleteAllFavoriteArticle: SharedFlow<Resource<String>> get() = _deleteAllFavoriteArticle
-
-
+    
     private var _articleFavoriteExist = MutableLiveData<Boolean>()
     val articleFavoriteExist: LiveData<Boolean> get() = _articleFavoriteExist
 

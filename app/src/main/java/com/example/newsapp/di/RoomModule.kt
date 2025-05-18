@@ -25,7 +25,7 @@ object RoomModule {
         context,
         ArticleDataBase::class.java,
         "favorite_database"
-    ).build()
+    ).fallbackToDestructiveMigration(false).build()
 
     @Provides
     @Singleton

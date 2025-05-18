@@ -23,6 +23,9 @@
     <string name="lost_network">Mất kết nối mạng</string>
     <string name="retry_network">Bạn vui lòng kiểm tra kết nối mạng và tải lại nhé</string>
     <string name="btn_reload">Tải lại</string>
+    <string name="favorite">Favorite</string>
+    <string name="delete_all"><b><i>Xóa tất cả</i> </b> </string>
+    <string name="article_empty">Chưa có bài báo yêu thích nào!</string>
 
 
 </resources>

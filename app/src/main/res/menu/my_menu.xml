@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_home"
         android:title="Trang chủ" />
     <item
-        android:id="@+id/favouriteFragment"
+        android:id="@+id/favoriteFragment"
         android:icon="@drawable/ic_favorite"
         android:title="Yêu thích" />
     <item

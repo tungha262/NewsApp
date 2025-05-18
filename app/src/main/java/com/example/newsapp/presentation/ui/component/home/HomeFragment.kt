@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.ui.component.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     override fun initUi() {
         adapter = NewPagerAdapter(this)
         binding.viewPager2.adapter = adapter
-        binding.viewPager2.offscreenPageLimit = 1
+        binding.viewPager2.offscreenPageLimit = 7
         TabLayoutMediator(binding.tabLayout, binding.viewPager2){ tab, pos ->
             tab.text = when(pos){
                 0 -> "Mới nhất"
@@ -45,6 +46,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     override fun onDestroyView() {
         super.onDestroyView()
-        CustomToast.makeText(requireContext(), CustomToast.FAILED,"destroy home")
+        Log.d("tung","onDestroyView home")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("tung","onDestroy home")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("tung","onResume home")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("tung","onPause home")
+
     }
 }

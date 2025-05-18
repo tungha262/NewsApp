@@ -152,8 +152,6 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                 .load(article.imageUrl)
                 .into(imageArticle)
         }
-
-
     }
 
     private fun getCategory(category: String): String {

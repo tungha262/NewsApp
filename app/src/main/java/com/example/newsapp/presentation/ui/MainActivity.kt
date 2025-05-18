@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 arguments: Bundle?
             ) {
                 when (destination.id) {
-                    R.id.splashFragment, R.id.signInFragment,
+                    R.id.splashFragment, R.id.signInFragment, R.id.articleFragment,
                     R.id.signUpFragment, R.id.forgotPasswordFragment -> {
                         binding.bottomNavView.visibility = View.GONE
                     }
@@ -57,8 +57,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
-
     }
 
 }
