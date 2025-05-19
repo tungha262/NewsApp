@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     tools:context=".presentation.ui.component.favorite.FavoriteFragment">
 
     <LinearLayout
@@ -13,6 +14,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp"
+        android:background="?attr/itemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,8 +22,8 @@
 
         <ImageView
             android:id="@+id/img_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginStart="10dp"
             app:srcCompat="@drawable/icon"
             tools:ignore="ContentDescription"
@@ -74,9 +76,7 @@
         android:id="@+id/layout_empty"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         android:orientation="vertical"
-        android:visibility="gone"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,11 +84,11 @@
         app:layout_constraintTop_toBottomOf="@id/layout_delete_all">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            android:layout_marginTop="80dp"
-            android:src="@drawable/empty"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/empty1"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -97,8 +97,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/article_empty"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="#a6a6a6"
+            android:textAppearance="@style/TextAppearance.MyApp.HintText"
             android:textSize="26sp"
             android:textStyle="bold"
             tools:ignore="TextContrastCheck" />

@@ -23,9 +23,16 @@
     <string name="lost_network">Mất kết nối mạng</string>
     <string name="retry_network">Bạn vui lòng kiểm tra kết nối mạng và tải lại nhé</string>
     <string name="btn_reload">Tải lại</string>
-    <string name="favorite">Favorite</string>
+    <string name="favorite">Yêu thích</string>
     <string name="delete_all"><b><i>Xóa tất cả</i> </b> </string>
     <string name="article_empty">Chưa có bài báo yêu thích nào!</string>
-
+    <string name="setting">Cài đặt</string>
+    <string name="settings_auth">Đăng nhập / Tạo tài khoản</string>
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="op"><![CDATA[>]]></string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="find_article">Tìm bài viết</string>
+    <string name="cancel">Hủy</string>
 
 </resources>

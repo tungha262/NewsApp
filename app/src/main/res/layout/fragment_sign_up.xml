@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="?android:colorBackground"
     tools:context=".presentation.ui.component.auth.SignUpFragment">
 
     <LinearLayout
@@ -24,9 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:textColor="#3F51B5"
             android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.MyApp.Auth"
             android:textSize="35sp"
             android:text="@string/sign_up" />
 
@@ -91,8 +91,7 @@
             android:text="@string/intro_login"
             android:textStyle="italic"
             android:textSize="15sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="#673AB7"
+            android:textAppearance="@style/TextAppearance.MyApp.Auth"
             android:layout_gravity="right"
             android:layout_marginTop="5dp"
             tools:ignore="RtlHardcoded" />

@@ -12,18 +12,22 @@ import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSplashBinding
 import com.example.newsapp.presentation.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
     override fun initUi() {
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(
-                R.id.action_splashFragment_to_homeFragment,
-                null,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.splashFragment, true)
-                    .build()
-            )
+            if (isAdded) {
+                findNavController().navigate(
+                    R.id.action_splashFragment_to_homeFragment,
+                    null,
+                    NavOptions.Builder()
+                        .setPopUpTo(R.id.splashFragment, true)
+                        .build()
+                )
+            }
         }, 2000)
     }
     override fun initListener() {}

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/itemBackground"
     android:foreground="?attr/selectableItemBackground"
     android:padding="8dp">
 
@@ -34,7 +35,6 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/title"
-        android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
@@ -51,7 +51,6 @@
         android:textSize="13sp"
         android:maxLines="2"
         android:text="@string/description"
-        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/article_image"
         app:layout_constraintTop_toBottomOf="@+id/article_title" />
@@ -61,7 +60,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/date_time"
-        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

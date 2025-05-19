@@ -27,11 +27,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/bottom_nav_view"
         android:foregroundGravity="bottom"
-        android:background="#f2cece"
         app:menu="@menu/my_menu"
         app:itemActiveIndicatorStyle="@android:color/transparent"
-        app:itemIconTint="@color/bottom_nav_selector"
-        app:itemTextColor="@color/bottom_nav_selector"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

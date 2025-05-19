@@ -79,8 +79,7 @@ class AuthRepositoryImpl @Inject constructor(
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val userId = result.user?.uid
             if (userId != null) {
-                sharedPreferenceHelper.setUserId(userId)
-                sharedPreferenceHelper.setEmail(email)
+                sharedPreferenceHelper.setUserName(userId, name)
                 return Resource.Success("Đăng ký thành công!")
             }
             else{

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDFDFD"
+    android:background="?attr/itemBackground"
     android:padding="12dp"
     tools:context=".presentation.ui.component.article.ArticleFragment">
 
@@ -69,11 +69,11 @@
                     app:layout_constraintVertical_bias="0.0" />
 
                 <ImageView
+                    android:scaleType="fitXY"
                     android:id="@+id/image_source"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="50dp"
-                    android:scaleType="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="25dp"
                     android:src="@drawable/icon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -89,7 +89,7 @@
                     android:padding="2sp"
                     android:text="Tạp chí Công nghệ thông tin và Truyền thông"
                     android:textColor="@color/text_auth_color"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/image_source"
                     app:layout_constraintTop_toBottomOf="@+id/image_source" />
@@ -114,7 +114,6 @@
                     android:layout_height="200dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="6dp">
 
@@ -207,12 +206,11 @@
         android:id="@+id/btn_close"
         android:layout_width="50dp"
         android:layout_height="55dp"
-        android:backgroundTint="#ccddff"
         app:cornerRadius="15dp"
+        style="@style/button_style"
         app:icon="@drawable/close"
         app:iconGravity="textEnd"
         app:iconPadding="0dp"
-        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
@@ -221,12 +219,11 @@
         android:id="@+id/btn_favorite"
         android:layout_width="50dp"
         android:layout_height="55dp"
-        android:backgroundTint="#ccddff"
         app:cornerRadius="15dp"
         app:icon="@drawable/love"
         app:iconGravity="textEnd"
+        style="@style/button_style"
         app:iconPadding="0dp"
-        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />

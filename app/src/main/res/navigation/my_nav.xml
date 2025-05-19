@@ -83,4 +83,17 @@
             android:id="@+id/action_favoriteFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.newsapp.presentation.ui.component.settings.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+    </fragment>
 </navigation>

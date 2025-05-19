@@ -1,7 +1,43 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.NewsApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="itemBackground">@color/on_background</item>
+
+        <item name="android:colorBackground">#1a1a1a</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNav</item>
+        <item name="buttonStyle">@style/button_style</item>
+
     </style>
+
+    <style name="button_style">
+        <item name="android:backgroundTint">#313131</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+
+    <!-- Style cho BottomNavigationView -->
+    <style name="CustomBottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">#1A1A1A</item>
+        <item name="itemIconTint">@color/bottom_nav_selector_dark</item>
+        <item name="itemTextColor">@color/bottom_nav_selector_dark</item>
+    </style>
+
+    <style name="search_background">
+        <item name="android:background">@drawable/seach_background_dark</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.HintText" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">#f2f2f2</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Auth" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">#f2f2f2</item>
+    </style>
+
 </resources>

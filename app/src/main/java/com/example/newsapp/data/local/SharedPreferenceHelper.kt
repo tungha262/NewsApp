@@ -1,31 +1,31 @@
 package com.example.newsapp.data.local
 
 import android.content.SharedPreferences
-import com.example.newsapp.utils.Constant
-import javax.inject.Inject
 import androidx.core.content.edit
-import com.example.newsapp.utils.Constant.Companion.EMAIL
-import com.example.newsapp.utils.Constant.Companion.USER_ID
+import com.example.newsapp.utils.Constant.Companion.USER_NAME
+import com.example.newsapp.utils.Constant.Companion.THEME
+import javax.inject.Inject
 
 class SharedPreferenceHelper @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) {
 
-    fun setUserId(userId:String){
+    fun setUserName(userId:String, userName: String){
         sharedPreferences.edit{
-            putString(USER_ID, userId)
+            putString(USER_NAME+userId, userName)
             apply()
         }
     }
 
-    fun getUserId() = sharedPreferences.getString(USER_ID, "")
+    fun getUserName(userId:String) = sharedPreferences.getString(USER_NAME+userId, "")
 
-    fun setEmail(email: String){
-        sharedPreferences.edit{
-            putString(EMAIL, email)
+    fun setTheme(isDark : Boolean){
+        sharedPreferences.edit {
+            putBoolean(THEME, isDark)
             apply()
         }
     }
-    fun getEmail() = sharedPreferences.getString(EMAIL, "")
+
+    fun getTheme() = sharedPreferences.getBoolean(THEME, false)
 
 }

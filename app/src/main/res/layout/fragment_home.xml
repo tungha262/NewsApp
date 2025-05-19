@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     tools:context=".presentation.ui.component.home.HomeFragment">
-
     <LinearLayout
+        android:background="?attr/itemBackground"
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +22,8 @@
         <ImageView
             android:layout_marginStart="10dp"
             android:id="@+id/img_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             app:srcCompat="@drawable/icon"
             tools:layout_editor_absoluteX="33dp"
             tools:ignore="ContentDescription" />

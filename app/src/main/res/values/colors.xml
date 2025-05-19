@@ -6,4 +6,17 @@
     <color name="text_auth_color">#3F51B5</color>
     <color name="gray">#d9d9d9</color>
     <color name="btn_color">#4775d1</color>
+
+    <color name="primary">#6200EE</color> <!-- Tím đậm -->
+    <color name="primary_variant">#3700B3</color> <!-- Tím đậm hơn -->
+    <color name="on_primary">#FFFFFF</color> <!-- Trắng -->
+    <color name="secondary">#03DAC5</color> <!-- Xanh lam nhạt -->
+    <color name="secondary_variant">#018786</color> <!-- Xanh lam đậm -->
+    <color name="on_secondary">#000000</color> <!-- Đen -->
+    <color name="background">#FAFAFA</color> <!-- Trắng nhạt -->
+    <color name="on_background">#212121</color> <!-- Đen đậm -->
+    <color name="card_background">#FFFFFF</color> <!-- Nền thẻ trắng -->
+    <color name="text_secondary">#757575</color> <!-- Xám đậm cho văn bản phụ -->
+    <color name="icon_selected">#6200EE</color> <!-- Tím đậm -->
+    <color name="icon_unselected">#757575</color> <!-- Xám đậm -->
 </resources>
