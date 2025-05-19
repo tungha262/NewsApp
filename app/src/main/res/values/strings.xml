@@ -34,5 +34,9 @@
     <string name="log_out">Đăng xuất</string>
     <string name="find_article">Tìm bài viết</string>
     <string name="cancel">Hủy</string>
+    <string name="current_pw">Mật khẩu hiện tại</string>
+    <string name="new_pw">Mật khẩu mới</string>
+    <string name="confirm_new_pw">Xác nhận lai mật khẩu</string>
+    <string name="update_pw">Cập nhật</string>
 
 </resources>

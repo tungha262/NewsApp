@@ -69,6 +69,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                         as InputMethodManager
                 imm.hideSoftInputFromWindow(view?.windowToken, 0)
                 searchEditText.clearFocus()
+
             }
         }
 
@@ -89,7 +90,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         )
 
         binding.layoutChangePassword.setOnClickListener {
-
+            ChangePasswordFragment().show(childFragmentManager, "ChangePassword")
         }
 
         binding.layoutAuth.setOnClickListener {
@@ -151,7 +152,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             .setPositiveButton("Có") { _, _ ->
                 auth.signOut()
                 findNavController().navigate(R.id.settingFragment)
-                Log.d("tung", "log out ${auth.currentUser!!.uid}")
+                Log.d("tung", "log out ")
             }
             .setNegativeButton("Không", null)
             .show()

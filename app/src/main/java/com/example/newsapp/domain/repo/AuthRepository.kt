@@ -10,4 +10,7 @@ interface AuthRepository {
 
     suspend fun resetPassword(email: String) : Resource<String>
 
+    suspend fun changePassword(old: String, new: String, confirm: String) : Resource<String>
+
+
 }

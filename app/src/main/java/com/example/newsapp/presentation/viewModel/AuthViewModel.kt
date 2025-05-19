@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.String
 
 @Suppress("REDUNDANT_ELSE_IN_WHEN")
 @HiltViewModel
@@ -20,15 +21,18 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _loginState = MutableLiveData<Resource<String>>()
-    val loginState : LiveData<Resource<String>> get() = _loginState
+    val loginState: LiveData<Resource<String>> get() = _loginState
 
-    private val _signupState = MutableSharedFlow<Resource<String>>()
+    private var _signupState = MutableSharedFlow<Resource<String>>()
     val signupState: SharedFlow<Resource<String>> get() = _signupState
 
-    private val _resetPasswordState = MutableSharedFlow<Resource<String>>()
+    private var _resetPasswordState = MutableSharedFlow<Resource<String>>()
     val resetPasswordState: SharedFlow<Resource<String>> get() = _resetPasswordState
 
-    fun login(email:String, password:String){
+    private var _changePassWordState = MutableSharedFlow<Resource<String>>()
+    val changePassWorkState: SharedFlow<Resource<String>> get() = _changePassWordState
+
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             authRepository.login(email, password).collect { rs ->
                 when (rs) {
@@ -40,16 +44,21 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signup(name:String, email: String, password: String){
+    fun signup(name: String, email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _signupState.emit(authRepository.signup(name, email, password))
         }
     }
 
-    fun resetPassword(email: String){
+    fun resetPassword(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _resetPasswordState.emit(authRepository.resetPassword(email))
         }
     }
 
+    fun changePassword(old: String, new: String, confirm :  String){
+        viewModelScope.launch(Dispatchers.IO) {
+            _changePassWordState.emit(authRepository.changePassword(old, new, confirm))
+        }
+    }
 }

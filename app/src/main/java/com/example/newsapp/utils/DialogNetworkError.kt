@@ -19,8 +19,6 @@ class DialogNetworkError(
     private val onRetry: () -> Unit
 ) : DialogFragment() {
 
-
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(
