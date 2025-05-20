@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,6 +22,8 @@ import com.example.newsapp.utils.DialogNetworkError
 import com.example.ui_news.util.CustomProgress
 import com.example.ui_news.util.CustomToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryBinding::inflate) {
@@ -49,13 +52,13 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             )
             layoutManager = LinearLayoutManager(requireContext())
         }
-
         if (NetworkConfig.isInternetConnected(requireContext())) {
             if (viewModel.getCurrentData(category).isEmpty()) {
                 Log.d("tung", "call api")
                 viewModel.getArticles(category)
             }
         }
+
     }
 
     override fun initListener() {
@@ -97,7 +100,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                     dx: Int,
                     dy: Int
                 ) {
-                     super.onScrolled(recyclerView, dx, dy)
+                    super.onScrolled(recyclerView, dx, dy)
                     val layout = layoutManager as LinearLayoutManager
                     val visibleItem = layout.childCount
                     val totalItem = layout.itemCount
@@ -207,7 +210,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
         isFragmentVisible = true
 
         if (networkDialog == null) {
-            if(!NetworkConfig.isInternetConnected(requireContext())){
+            if (!NetworkConfig.isInternetConnected(requireContext())) {
                 networkDialog = DialogNetworkError {
                     Log.d("tung", "Refresh data network error")
                     viewModel.refreshCategory(category)

@@ -33,6 +33,9 @@ class RemoteViewModel @Inject constructor(
 
 
     fun searchArticle(query : String){
+        if(query.isEmpty()){
+            return
+        }
         this.query = query
         Log.d("tung", "call search with $query")
         viewModelScope.launch {
@@ -127,5 +130,9 @@ class RemoteViewModel @Inject constructor(
 
     fun isClearAdapter() : Boolean{
         return query==oldQuery
+    }
+
+    fun getLastSearchPage() : Boolean{
+        return isLastSearchPage
     }
 }

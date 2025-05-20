@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.data.local.SharedPreferenceHelper
 import com.example.newsapp.databinding.FragmentSettingBinding
@@ -34,6 +35,7 @@ import com.example.newsapp.utils.DialogNetworkError
 import com.example.ui_news.util.CustomProgress
 import com.example.ui_news.util.CustomToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.play.integrity.internal.ac
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -50,6 +52,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private lateinit var adapter: SearchAdapter
     private var networkDialog: DialogNetworkError? = null
 
+    private var isLoadingMore = false
+    private var lastSearchQuery: String = ""
+
     @Inject
     lateinit var auth: FirebaseAuth
 
@@ -61,15 +66,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private var searchJob: Job? = null
 
     override fun initListener() {
+        binding.apply {
+            adapter.setOnItemClickListener { item ->
+                val action = SettingFragmentDirections
+                    .actionSettingFragmentToArticleFragment(item, "")
+                findNavController().navigate(action)
+            }
+        }
+
+
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                if (s.toString() == lastSearchQuery) return
                 if (s.toString().isBlank() || s.toString() == "") {
                     remoteViewModel.clearSearch()
                     adapter.setData(emptyList())
-                }else{
+                } else {
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
-                        delay(1500)
+                        delay(1000)
+                        lastSearchQuery = s.toString()
                         remoteViewModel.searchArticle(removeVietnameseAccents(s.toString().trim()))
                     }
                 }
@@ -116,6 +132,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 layoutContent.visibility = View.VISIBLE
                 searchEditText.text.clear()
                 btnCancel.visibility = View.GONE
+                layoutDarkMode.visibility = View.VISIBLE
+
                 searchContainer.apply {
                     val params = layoutParams as LinearLayout.LayoutParams
                     params.weight = 1f
@@ -150,6 +168,50 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 }
             }
         )
+
+        binding.recyclerViewSearchResults.apply {
+            addOnScrollListener(object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrolled(
+                    recyclerView: RecyclerView,
+                    dx: Int,
+                    dy: Int
+                ) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layout = layoutManager as LinearLayoutManager
+                    val visibleItem = layout.childCount
+                    val totalItem = layout.itemCount
+                    val firstItem = layout.findFirstVisibleItemPosition()
+
+                    val isAtEnd = firstItem + visibleItem >= totalItem
+                    val isScrollDown = dy > 0
+                    val shouldLoad = isAtEnd && isScrollDown && !isLoadingMore &&
+                            !(remoteViewModel.getLastSearchPage()) && firstItem >= 0
+
+                    if (shouldLoad) {
+                        if (NetworkConfig.isInternetConnected(requireContext())) {
+                            isLoadingMore = true
+                            Log.d("tung", "search load more")
+                            remoteViewModel.searchArticle(binding.searchEditText.text.toString())
+                        }
+                        else{
+                            Log.d("tung", "no internet search")
+                            networkDialog = DialogNetworkError{
+                                if(NetworkConfig.isInternetConnected(requireContext())){
+                                    networkDialog?.dismiss()
+                                    networkDialog = null
+                                }
+                            }
+                            networkDialog!!.show(
+                                requireActivity().supportFragmentManager,
+                                "DialogNetworkError"
+                            )
+                        }
+                    }
+                }
+            })
+        }
+
 
         binding.layoutChangePassword.setOnClickListener {
             ChangePasswordFragment().show(childFragmentManager, "ChangePassword")
@@ -236,6 +298,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             when (rs) {
                 is Resource.Failed -> {
                     CustomProgress.hide()
+                    isLoadingMore = false
                     if (!NetworkConfig.isInternetConnected(requireContext())) {
                         networkDialog = DialogNetworkError {
                             if (NetworkConfig.isInternetConnected(requireContext())) {
@@ -243,9 +306,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                                 networkDialog = null
                             }
                         }
-                        networkDialog!!.show(requireActivity().supportFragmentManager, "DialogNetworkError")
+                        networkDialog!!.show(
+                            requireActivity().supportFragmentManager,
+                            "DialogNetworkError"
+                        )
                     } else {
-                        CustomToast.makeText(requireContext(), CustomToast.FAILED, rs.message)
+                        CustomToast.makeText(requireContext(), CustomToast.FAILED, rs.message).show()
                     }
                 }
 
@@ -255,6 +321,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
                 is Resource.Success -> {
                     CustomProgress.hide()
+                    isLoadingMore = false
                     val view = requireActivity().currentFocus
                     val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
                             as InputMethodManager
@@ -267,10 +334,10 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     }
                     val currentData = adapter.itemCount
                     val newData = rs.data
-                    if(currentData==0 && newData.isEmpty()){
+                    if (currentData == 0 && newData.isEmpty()) {
                         binding.recyclerViewSearchResults.visibility = View.GONE
                         binding.tvNoData.visibility = View.VISIBLE
-                    }else{
+                    } else {
                         binding.recyclerViewSearchResults.visibility = View.VISIBLE
                         binding.tvNoData.visibility = View.GONE
                     }
@@ -292,5 +359,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         return pattern.matcher(temp).replaceAll("")
             .replace('đ', 'd')
             .replace('Đ', 'D')
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(adapter.itemCount > 0){
+            binding.apply {
+                layoutContent.visibility = View.GONE
+                binding.btnCancel.visibility = View.VISIBLE
+            }
+        }
     }
 }

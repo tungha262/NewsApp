@@ -16,7 +16,6 @@ class NetworkConnectionInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!NetworkConfig.isInternetConnected(context)) {
             throw IOException()
-            TimeUnit.MILLISECONDS.sleep(500)
         }
         return chain.proceed(chain.request())
     }

@@ -41,30 +41,32 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
     private val localViewModel: LocalViewModel by viewModels()
 
 
-
     override fun observerViewModel() {
         super.observerViewModel()
         lifecycleScope.launch {
             localViewModel.addFavoriteArticle.collect { state ->
-                when(state){
+                when (state) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         Log.d("tung", "call localViewModel add favorite success")
-                        CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
+                        CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data)
+                            .show()
                     }
+
                     is Resource.Failed -> {
                         Log.d("tung", "call localViewModel add favorite success")
-                        CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()
+                        CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message)
+                            .show()
                     }
                 }
             }
         }
 
         localViewModel.articleFavoriteExist.observe(viewLifecycleOwner) { exist ->
-            if(exist){
+            if (exist) {
                 binding.btnFavorite.visibility = View.GONE
                 isArticleExist = true
-            }else{
+            } else {
                 isArticleExist = false
                 binding.btnFavorite.visibility = View.VISIBLE
             }
@@ -96,12 +98,10 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                 networkError?.show(childFragmentManager, "DialogNetworkError")
             } else {
                 Log.d("tung", "call localViewModel add favorite")
-                if(currentUser!= null){
+                if (currentUser != null) {
                     localViewModel.addFavoriteArticle(article)
                     Log.d("tung", "add favorite ${currentUser.uid}")
-                }
-
-                else{
+                } else {
                     findNavController().navigate(R.id.action_articleFragment_to_signInFragment)
                 }
             }
@@ -121,7 +121,7 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                 } else if (lastScrollY - scrollY > limit && !buttonsVisible) {
                     // Kéo lên vượt giới hạn thì hiện
                     binding.btnClose.visibility = View.VISIBLE
-                    if(isArticleExist){
+                    if (isArticleExist) {
                         binding.btnFavorite.visibility = View.VISIBLE
                     }
                     buttonsVisible = true
@@ -154,17 +154,24 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
         localViewModel.findArticleById(article.articleId)
 
         binding.apply {
-            tvTitle.text = article.title ?: "Xảy ra lỗi, vui lòng thử lại!"
+            tvTitle.text = article.title
             tvCategory.text = category
-            tvDesc.text = splitContent(article.description.toString())
+            if (tvDesc.text != "null") {
+                tvDesc.text = splitContent(article.description.toString())
+            } else {
+                tvDesc.text = ""
+            }
+
             tvSourceName.text = article.sourceName
             tvDateTime.text = FormatDateTime.formatFull(article.pubDate.toString())
             Glide.with(root)
                 .load(article.sourceIcon)
                 .into(imageSource)
             tvLink.text = article.link
+
             Glide.with(root)
                 .load(article.imageUrl)
+                .error(R.drawable.default_image)
                 .into(imageArticle)
         }
     }
