@@ -18,29 +18,61 @@ class RemoteRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ) : RemoteRepository {
     private lateinit var response: Response<ResultApi>
+    private lateinit var searchResponse: Response<ResultApi>
     override fun getArticles(
         category: String,
         pageNumber: String?
     ): Flow<Resource<ResultApi>> = flow {
         emit(Resource.Loading)
         try {
-            if(pageNumber==null){
+            if (pageNumber == null) {
                 response = apiService.getArticles(category = category)
-            }else{
+            } else {
                 response = apiService.getArticles(category = category, pageNumber = pageNumber)
             }
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 val data = response.body()
                 if (data != null) {
                     emit(Resource.Success(data))
                 } else {
                     emit(Resource.Failed("Có lỗi xảy ra, không có dữ liệu trả về!"))
                 }
-            }else{
+            } else {
                 emit(Resource.Failed(response.message()))
             }
-        }catch (e: Exception){
-            when(e){
+        } catch (e: Exception) {
+            when (e) {
+                is IOException -> emit(Resource.Failed("Không có kết nối mạng!"))
+                is HttpException -> emit(Resource.Failed("${e.code()}- ${e.message}"))
+                else -> emit(Resource.Failed(e.message.toString()))
+            }
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override fun searchArticles(
+        search: String,
+        pageNumber: String?
+    ): Flow<Resource<ResultApi>> = flow {
+        emit(Resource.Loading)
+        try {
+            if (pageNumber == null) {
+                searchResponse = apiService.searchArticles(search = search)
+            } else {
+                searchResponse = apiService.searchArticles(search = search, pageNumber = pageNumber)
+            }
+
+            if (searchResponse.isSuccessful) {
+                val data = searchResponse.body()
+                if (data != null) {
+                    emit(Resource.Success(data))
+                } else {
+                    emit(Resource.Failed("Có lỗi xảy ra, không có dữ liệu trả về!"))
+                }
+            } else {
+                emit(Resource.Failed(searchResponse.message()))
+            }
+        }catch (e : Exception){
+            when (e) {
                 is IOException -> emit(Resource.Failed("Không có kết nối mạng!"))
                 is HttpException -> emit(Resource.Failed("${e.code()}- ${e.message}"))
                 else -> emit(Resource.Failed(e.message.toString()))

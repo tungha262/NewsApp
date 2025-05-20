@@ -3,6 +3,8 @@ package com.example.newsapp.presentation.ui.component.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,20 +15,40 @@ import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
 import com.example.newsapp.data.local.SharedPreferenceHelper
 import com.example.newsapp.databinding.FragmentSettingBinding
+import com.example.newsapp.domain.state.Resource
+import com.example.newsapp.network.NetworkConfig
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.ui.MainActivity
+import com.example.newsapp.presentation.ui.component.category.CategoryAdapter
+import com.example.newsapp.presentation.viewModel.RemoteViewModel
 import com.example.newsapp.utils.Constant.Companion.THEME
+import com.example.newsapp.utils.DialogNetworkError
+import com.example.ui_news.util.CustomProgress
+import com.example.ui_news.util.CustomToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.Normalizer
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
+
+    private val remoteViewModel: RemoteViewModel by viewModels()
+    private lateinit var adapter: SearchAdapter
+    private var networkDialog: DialogNetworkError? = null
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -36,7 +58,42 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     private lateinit var bottomNav: BottomNavigationView
 
+    private var searchJob: Job? = null
+
     override fun initListener() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString().isBlank() || s.toString() == "") {
+                    remoteViewModel.clearSearch()
+                    adapter.setData(emptyList())
+                }else{
+                    searchJob?.cancel()
+                    searchJob = lifecycleScope.launch {
+                        delay(1500)
+                        remoteViewModel.searchArticle(removeVietnameseAccents(s.toString().trim()))
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+
+            }
+        })
+
 
         binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -48,6 +105,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     params.weight = 0.8f
                     layoutParams = params
                 }
+                binding.recyclerViewSearchResults.visibility = View.VISIBLE
             } else {
                 bottomNav.visibility = View.VISIBLE
             }
@@ -63,6 +121,10 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     params.weight = 1f
                     layoutParams = params
                 }
+                binding.recyclerViewSearchResults.visibility = View.GONE
+                binding.tvNoData.visibility = View.GONE
+                remoteViewModel.clearSearch()
+                adapter.setData(emptyList())
                 // hide keyboard
                 val view = requireActivity().currentFocus
                 val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
@@ -105,7 +167,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             sharedPreferences.setTheme(isChecked)
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }else{
+            } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
             requireActivity().recreate()
@@ -116,10 +178,20 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     override fun initUi() {
         bottomNav = (requireActivity() as MainActivity)
             .findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-
         val isDarkMode = sharedPreferences.getTheme()
-
         binding.switchDark.isChecked = isDarkMode
+
+        adapter = SearchAdapter()
+        binding.recyclerViewSearchResults.adapter = adapter
+        binding.recyclerViewSearchResults.apply {
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+            layoutManager = LinearLayoutManager(requireContext())
+        }
 
 
         val currentUser = auth.currentUser
@@ -158,4 +230,67 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             .show()
     }
 
+    override fun observerViewModel() {
+        super.observerViewModel()
+        remoteViewModel.searchArticle.observe(viewLifecycleOwner) { rs ->
+            when (rs) {
+                is Resource.Failed -> {
+                    CustomProgress.hide()
+                    if (!NetworkConfig.isInternetConnected(requireContext())) {
+                        networkDialog = DialogNetworkError {
+                            if (NetworkConfig.isInternetConnected(requireContext())) {
+                                networkDialog?.dismiss()
+                                networkDialog = null
+                            }
+                        }
+                        networkDialog!!.show(requireActivity().supportFragmentManager, "DialogNetworkError")
+                    } else {
+                        CustomToast.makeText(requireContext(), CustomToast.FAILED, rs.message)
+                    }
+                }
+
+                Resource.Loading -> {
+                    CustomProgress.show(requireActivity())
+                }
+
+                is Resource.Success -> {
+                    CustomProgress.hide()
+                    val view = requireActivity().currentFocus
+                    val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                            as InputMethodManager
+                    imm.hideSoftInputFromWindow(view?.windowToken, 0)
+                    binding.searchEditText.clearFocus()
+
+                    Log.d("tung", "search success ${rs.data.size}")
+                    if (remoteViewModel.isClearAdapter()) {
+                        adapter.setData(emptyList())
+                    }
+                    val currentData = adapter.itemCount
+                    val newData = rs.data
+                    if(currentData==0 && newData.isEmpty()){
+                        binding.recyclerViewSearchResults.visibility = View.GONE
+                        binding.tvNoData.visibility = View.VISIBLE
+                    }else{
+                        binding.recyclerViewSearchResults.visibility = View.VISIBLE
+                        binding.tvNoData.visibility = View.GONE
+                    }
+
+                    if (currentData == 0) {
+                        adapter.setData(newData)
+                    } else if (newData.size > currentData) {
+                        val moreItems = newData.subList(currentData, newData.size)
+                        adapter.appendData(moreItems)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeVietnameseAccents(str: String): String {
+        val temp = Normalizer.normalize(str, Normalizer.Form.NFD)
+        val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
+        return pattern.matcher(temp).replaceAll("")
+            .replace('đ', 'd')
+            .replace('Đ', 'D')
+    }
 }

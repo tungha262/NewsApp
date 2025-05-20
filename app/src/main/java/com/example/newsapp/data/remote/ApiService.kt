@@ -11,11 +11,19 @@ interface ApiService {
 
     @GET("api/1/latest")
     suspend fun getArticles(
-        @Query("country") country : String = Constant.COUNTRY,
+        @Query("country") country: String = Constant.COUNTRY,
         @Query("language") language: String = Constant.COUNTRY,
         @Query("category") category: String,
         @Query("page") pageNumber: String? = null,
-        @Query("apikey") apiKey:String = Constant.API_KEY
-    ) : Response<ResultApi>
+        @Query("apikey") apiKey: String = Constant.API_KEY
+    ): Response<ResultApi>
 
+    @GET("api/1/latest")
+    suspend fun searchArticles(
+        @Query("country") country: String = Constant.COUNTRY,
+        @Query("language") language: String = Constant.COUNTRY,
+        @Query("page") pageNumber: String? = null,
+        @Query("apikey") apiKey: String = Constant.API_KEY,
+        @Query("q") search: String? = null
+    ): Response<ResultApi>
 }

@@ -9,4 +9,6 @@ interface RemoteRepository {
 
     fun getArticles(category:String, pageNumber: String?) : Flow<Resource<ResultApi>>
 
+    fun searchArticles(search: String, pageNumber: String?) : Flow<Resource<ResultApi>>
+
 }

@@ -66,7 +66,6 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             val hasNetwork = NetworkConfig.isInternetConnected(requireContext())
 
             if (hasNetwork) {
-
                 if (viewModel.getCurrentData(category).isEmpty()) {
                     Log.d("tung", "Refresh with no data")
                     viewModel.getArticles(category)
@@ -98,7 +97,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                     dx: Int,
                     dy: Int
                 ) {
-                    super.onScrolled(recyclerView, dx, dy)
+                     super.onScrolled(recyclerView, dx, dy)
                     val layout = layoutManager as LinearLayoutManager
                     val visibleItem = layout.childCount
                     val totalItem = layout.itemCount
@@ -206,6 +205,16 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
         Log.d("tung", "resume $category")
         Log.d("tung", "${viewModel.getCurrentData(category).size} - size $category")
         isFragmentVisible = true
+
+        if (networkDialog == null) {
+            if(!NetworkConfig.isInternetConnected(requireContext())){
+                networkDialog = DialogNetworkError {
+                    Log.d("tung", "Refresh data network error")
+                    viewModel.refreshCategory(category)
+                }
+                networkDialog!!.show(childFragmentManager, "DialogNetworkError")
+            }
+        }
     }
 
     override fun onPause() {
