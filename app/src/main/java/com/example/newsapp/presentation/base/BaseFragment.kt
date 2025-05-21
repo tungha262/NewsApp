@@ -19,7 +19,6 @@ abstract class BaseFragment<VB : ViewBinding>(
         savedInstanceState: Bundle?
     ): View? {
         _binding = bindingInflater(inflater, container, false)
-        observerViewModel()
         return binding.root
     }
 
@@ -27,7 +26,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         super.onViewCreated(view, savedInstanceState)
         initUi()
         initListener()
-
+        observerViewModel()
     }
 
     override fun onDestroy() {

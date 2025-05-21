@@ -184,7 +184,7 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
             "technology" -> "Công nghệ"
             "health" -> "Sức khỏe"
             "sports" -> "Thể thao"
-            else -> "entertainment"
+            else -> "Giải trí"
         }
     }
 

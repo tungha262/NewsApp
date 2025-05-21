@@ -198,4 +198,25 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
         )
         touchHelper.attachToRecyclerView(binding.rcvListFavorite)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("tung","onDestroyView favorite")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("tung","onDestroy favorite")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("tung","onResume favorite")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("tung","onPause favorite")
+
+    }
 }

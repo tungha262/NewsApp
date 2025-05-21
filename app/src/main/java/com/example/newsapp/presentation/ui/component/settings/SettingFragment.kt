@@ -363,11 +363,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onResume() {
         super.onResume()
+        Log.d("tung", "onResume settings")
         if(adapter.itemCount > 0){
             binding.apply {
                 layoutContent.visibility = View.GONE
                 binding.btnCancel.visibility = View.VISIBLE
             }
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("tung","onDestroy settings")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("tung","onPause settings")
+
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("tung","onDestroyView settings")
     }
 }

@@ -1,6 +1,7 @@
 package com.example.newsapp.presentation.ui.component.category
 
 import android.util.Log
+import android.view.ViewTreeObserver
 import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -21,6 +22,7 @@ import com.example.newsapp.utils.Constant
 import com.example.newsapp.utils.DialogNetworkError
 import com.example.ui_news.util.CustomProgress
 import com.example.ui_news.util.CustomToast
+import com.google.android.play.integrity.internal.v
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryBinding::inflate) {
 
-    private val viewModel: RemoteViewModel by viewModels()
+    private val viewModel: RemoteViewModel by activityViewModels()
     private var category: String = "top"
     private lateinit var adapter: CategoryAdapter
 
@@ -39,27 +41,40 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
 
     override fun initUi() {
         category = arguments?.getString(Constant.CATEGORY) ?: "top"
-        Log.d("tung", "$category init ui")
+        Log.d("tung", "$category init ui OnViewCreated")
+
         adapter = CategoryAdapter()
         binding.rcvCategory.adapter = adapter
+        binding.rcvCategory.layoutManager = LinearLayoutManager(requireContext())
+        binding.rcvCategory.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
 
-        binding.rcvCategory.apply {
-            addItemDecoration(
-                DividerItemDecoration(
-                    requireContext(),
-                    DividerItemDecoration.VERTICAL
-                )
+        val dataCurrent = viewModel.getCurrentData(category)
+        val savedPosition = viewModel.getScrollPosition(category)
+
+        if (dataCurrent.isNotEmpty()) {
+            Log.d("tung", "set cached data for $category with size ${dataCurrent.size}")
+            adapter.setData(dataCurrent)
+
+            binding.rcvCategory.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        binding.rcvCategory.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        (binding.rcvCategory.layoutManager as LinearLayoutManager)
+                            .scrollToPositionWithOffset(savedPosition, 0)
+                        Log.d("tung", "Scroll to position $savedPosition")
+                    }
+                }
             )
-            layoutManager = LinearLayoutManager(requireContext())
-        }
-        if (NetworkConfig.isInternetConnected(requireContext())) {
-            if (viewModel.getCurrentData(category).isEmpty()) {
-                Log.d("tung", "call api")
-                viewModel.getArticles(category)
-            }
         }
 
+        if (NetworkConfig.isInternetConnected(requireContext()) && dataCurrent.isEmpty()) {
+            Log.d("tung", "call api when data empty $category")
+            viewModel.getArticles(category)
+        }
     }
+
 
     override fun initListener() {
 
@@ -140,10 +155,11 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             }
         }
     }
+    
 
     override fun observerViewModel() {
         super.observerViewModel()
-        viewModel.article.observe(viewLifecycleOwner) { rs ->
+        viewModel.getArticleLiveData(category).observe(viewLifecycleOwner) { rs ->
             when (rs) {
                 is Resource.Failed -> {
                     CustomProgress.hide()
@@ -196,8 +212,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
                         val moreItems = newData.subList(currentData, newData.size)
                         adapter.appendData(moreItems)
                     }
-                    Log.d("tung", "setData $category")
-                    Log.d("tung", rs.data.size.toString())
+                    Log.d("tung", "setData $category ${rs.data.size}")
                 }
             }
         }
@@ -205,8 +220,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
 
     override fun onResume() {
         super.onResume()
-        Log.d("tung", "resume $category")
-        Log.d("tung", "${viewModel.getCurrentData(category).size} - size $category")
+        Log.d("tung", "resume $category with ${viewModel.getCurrentData(category).size}")
         isFragmentVisible = true
 
         if (networkDialog == null) {
@@ -223,5 +237,19 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
     override fun onPause() {
         super.onPause()
         isFragmentVisible = false
+
+        val layoutManager = binding.rcvCategory.layoutManager as? LinearLayoutManager
+        val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        viewModel.saveScrollPosition(category, position)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("tung", "onDestroyView category $category")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("tung", "onDestroy category $category")
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.newsapp.R
@@ -18,10 +19,13 @@ import com.example.ui_news.util.CustomToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private lateinit var adapter: NewPagerAdapter
+
+    private val viewModel: RemoteViewModel by activityViewModels()
 
     override fun initUi() {
         adapter = NewPagerAdapter(this)
@@ -38,7 +42,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 else -> "Giải trí"
             }
         }.attach()
+
+        binding.viewPager2.setCurrentItem(viewModel.selectedTabIndex, false)
+
     }
+
 
     override fun initListener() {
 
@@ -62,6 +70,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     override fun onPause() {
         super.onPause()
         Log.d("tung","onPause home")
-
+        viewModel.selectedTabIndex = binding.viewPager2.currentItem
     }
 }
