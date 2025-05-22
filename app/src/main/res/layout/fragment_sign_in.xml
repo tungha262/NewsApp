@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?android:colorBackground"
     android:orientation="vertical"
     tools:context=".presentation.ui.component.auth.SignInFragment">
@@ -17,16 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:scaleType="fitXY"
-            android:src="@drawable/top_background"
+            android:src="@drawable/login_background"
             tools:ignore="ContentDescription,ImageContrastCheck" />
 
         <TextView
+            style="@style/TextAppearance.MyApp.Auth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:foreground="?attr/selectableItemBackground"
             android:text="@string/login"
-            android:textAppearance="@style/TextAppearance.MyApp.Auth"
             android:textSize="35sp"
             android:textStyle="bold" />
 
@@ -73,33 +74,37 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="7dp">
 
             <TextView
                 android:id="@+id/tv_forgot_password"
+                style="@style/TextAppearance.MyApp.Auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="@string/forgot_password"
-                android:textAppearance="@style/TextAppearance.MyApp.Auth"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded,TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/tv_sign_up"
+                style="@style/TextAppearance.MyApp.Auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="@string/intro_register"
-                android:textAppearance="@style/TextAppearance.MyApp.Auth"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded,TouchTargetSizeCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -110,9 +115,9 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
+            android:backgroundTint="@color/btn_color"
             android:text="@string/login"
             android:textSize="20sp"
-            android:backgroundTint="@color/btn_color"
             app:cornerRadius="5dp"
             tools:ignore="DuplicateSpeakableTextCheck" />
     </LinearLayout>

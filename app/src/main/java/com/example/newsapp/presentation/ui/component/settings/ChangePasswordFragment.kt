@@ -1,9 +1,8 @@
 package com.example.newsapp.presentation.ui.component.settings
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +14,10 @@ import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentChangePasswordBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
-import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.ui.MainActivity
 import com.example.newsapp.presentation.viewModel.AuthViewModel
+import com.example.newsapp.utils.CustomToast
 import com.example.newsapp.utils.DialogNetworkError
-import com.example.ui_news.util.CustomToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -85,6 +83,7 @@ class ChangePasswordFragment : DialogFragment() {
 
         initListener()
     }
+
     private fun initUi() {
         bottomNav = (requireActivity() as MainActivity)
             .findViewById<BottomNavigationView>(R.id.bottom_nav_view)
@@ -121,6 +120,12 @@ class ChangePasswordFragment : DialogFragment() {
 
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        bottomNav.visibility = View.VISIBLE
+
     }
 
     override fun onDestroyView() {

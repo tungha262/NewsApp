@@ -12,7 +12,7 @@
     <string name="sign_up">Tạo tài khoản</string>
     <string name="name">Họ và tên</string>
     <string name="btn_sign_up">Đăng ký</string>
-    <string name="intro_login"><b>Bạn đã có tài khoản?<u> Đăng nhập</u></b>  </string>
+    <string name="intro_login"><b>Bạn đã có tài khoản? <u> Đăng nhập</u></b>  </string>
     <string name="load">Đang xử lý...</string>
     <string name="intro_forgot_password">Nhập địa chỉ email của bạn và chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.</string>
     <string name="get_password">Lấy lại mật khẩu</string>

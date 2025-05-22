@@ -1,6 +1,5 @@
 package com.example.newsapp.data.remote
 
-import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.ResultApi
 import com.example.newsapp.utils.Constant
 import retrofit2.Response

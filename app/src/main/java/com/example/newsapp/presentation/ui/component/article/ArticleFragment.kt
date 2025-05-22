@@ -17,9 +17,10 @@ import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.LocalViewModel
+import com.example.newsapp.utils.CustomToast
 import com.example.newsapp.utils.DialogNetworkError
 import com.example.newsapp.utils.FormatDateTime
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -82,10 +83,10 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                 }
             }
         )
+
         binding.btnClose.setOnClickListener {
             findNavController().popBackStack()
         }
-
         binding.btnFavorite.setOnClickListener {
             val currentUser = firebaseAuth.currentUser
             if (!NetworkConfig.isInternetConnected(requireContext())) {
@@ -102,11 +103,14 @@ class ArticleFragment : BaseFragment<FragmentArticleBinding>(FragmentArticleBind
                     localViewModel.addFavoriteArticle(article)
                     Log.d("tung", "add favorite ${currentUser.uid}")
                 } else {
-                    findNavController().navigate(R.id.action_articleFragment_to_signInFragment)
+                    findNavController().navigate(
+                        R.id.action_articleFragment_to_signInFragment,
+                        null,
+                        NavOptionsConfig.getFadeAnim()
+                    )
                 }
             }
         }
-
         binding.scrollView.apply {
             viewTreeObserver.addOnScrollChangedListener {
                 val scrollY = scrollY

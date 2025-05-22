@@ -1,7 +1,6 @@
 package com.example.newsapp.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +14,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.newsapp.R
 import com.example.newsapp.data.local.SharedPreferenceHelper
 import com.example.newsapp.databinding.ActivityMainBinding
-import com.example.newsapp.utils.InputCheckField
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -76,5 +73,4 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }

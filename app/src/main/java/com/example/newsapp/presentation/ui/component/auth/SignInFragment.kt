@@ -1,15 +1,15 @@
 package com.example.newsapp.presentation.ui.component.auth
 
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSignInBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.AuthViewModel
-import com.example.ui_news.util.CustomProgress
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.CustomProgress
+import com.example.newsapp.utils.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,12 +20,19 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
     override fun initListener() {
         binding.apply {
             tvForgotPassword.setOnClickListener {
-                findNavController().navigate(R.id.action_signInFragment_to_forgotPasswordFragment)
+                findNavController().navigate(
+                    R.id.action_signInFragment_to_forgotPasswordFragment,
+                    null,
+                    NavOptionsConfig.getSlideAnim()
+                )
             }
             tvSignUp.setOnClickListener {
-                findNavController().navigate(R.id.action_signInFragment_to_signUpFragment, null)
+                findNavController().navigate(
+                    R.id.action_signInFragment_to_signUpFragment,
+                    null,
+                    NavOptionsConfig.getSlideAnim()
+                )
             }
-
             btnLogin.setOnClickListener {
                 val email = binding.edtLoginEmail.text.toString()
                 val password = binding.edtLoginPassword.text.toString()
@@ -52,9 +59,8 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
                     findNavController().navigate(
                         R.id.action_signInFragment_to_homeFragment,
                         null,
-                        NavOptions.Builder()
-                            .setPopUpTo(R.id.signInFragment, true)
-                            .build()
+
+                        NavOptionsConfig.getSlideAnimWithPopUpTo(findNavController().graph.startDestinationId, true)
                     )
                 }
 

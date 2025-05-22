@@ -1,20 +1,15 @@
 package com.example.newsapp.presentation.ui.component.auth
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentForgotPasswordBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.AuthViewModel
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,8 +25,9 @@ class ForgotPasswordFragment : BaseFragment<FragmentForgotPasswordBinding>
 
     override fun initListener() {
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_forgotPasswordFragment_to_signInFragment)
+            findNavController().popBackStack()
         }
+
         binding.btnGetPassword.setOnClickListener {
             viewModel.resetPassword(binding.edtForgotEmail.text.toString())
         }
@@ -48,9 +44,7 @@ class ForgotPasswordFragment : BaseFragment<FragmentForgotPasswordBinding>
                         findNavController().navigate(
                             R.id.action_forgotPasswordFragment_to_signInFragment,
                             null,
-                            NavOptions.Builder()
-                                .setPopUpTo(R.id.forgotPasswordFragment, true)
-                                .build()
+                            NavOptionsConfig.getSlideAnimWithPopUpTo(R.id.forgotPasswordFragment)
                         )
                     }
                     is Resource.Failed -> {

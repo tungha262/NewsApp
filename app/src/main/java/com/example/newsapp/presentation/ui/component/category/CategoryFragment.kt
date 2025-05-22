@@ -2,16 +2,11 @@ package com.example.newsapp.presentation.ui.component.category
 
 import android.util.Log
 import android.view.ViewTreeObserver
-import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentCategoryBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
@@ -19,13 +14,11 @@ import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.ui.component.home.HomeFragmentDirections
 import com.example.newsapp.presentation.viewModel.RemoteViewModel
 import com.example.newsapp.utils.Constant
+import com.example.newsapp.utils.CustomProgress
+import com.example.newsapp.utils.CustomToast
 import com.example.newsapp.utils.DialogNetworkError
-import com.example.ui_news.util.CustomProgress
-import com.example.ui_news.util.CustomToast
-import com.google.android.play.integrity.internal.v
+import com.example.newsapp.utils.NavOptionsConfig
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryBinding::inflate) {
@@ -151,11 +144,11 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>(FragmentCategoryB
             adapter.setOnItemClickListener { item ->
                 val action =
                     HomeFragmentDirections.actionHomeFragmentToArticleFragment(item, category)
-                findNavController().navigate(action)
+                findNavController().navigate(action, NavOptionsConfig.getSlideAnim())
             }
         }
     }
-    
+
 
     override fun observerViewModel() {
         super.observerViewModel()

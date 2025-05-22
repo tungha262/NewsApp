@@ -6,8 +6,6 @@ import com.bumptech.glide.Glide
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.ArticleItemBinding
-import com.example.newsapp.databinding.FragmentCategoryBinding
-import com.example.newsapp.network.NetworkConfig
 import com.example.newsapp.presentation.base.BaseAdapter
 import com.example.newsapp.utils.FormatDateTime
 

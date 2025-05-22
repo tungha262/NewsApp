@@ -1,6 +1,7 @@
-package com.example.ui_news.util
+package com.example.newsapp.utils
 
 import android.content.Context
+import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -40,7 +41,7 @@ class CustomToast(context: Context) : Toast(context) {
             val toast = makeText(context, type, message)
             toast.show()
 
-            android.os.Handler().postDelayed({ toast.cancel() }, 500) // 500ms
+            Handler().postDelayed({ toast.cancel() }, 500) // 500ms
         }
     }
 

@@ -2,8 +2,8 @@ package com.example.newsapp.data.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.newsapp.utils.Constant.Companion.USER_NAME
 import com.example.newsapp.utils.Constant.Companion.THEME
+import com.example.newsapp.utils.Constant.Companion.USER_NAME
 import javax.inject.Inject
 
 class SharedPreferenceHelper @Inject constructor(

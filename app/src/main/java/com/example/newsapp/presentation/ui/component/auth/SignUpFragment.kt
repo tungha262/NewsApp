@@ -1,21 +1,16 @@
 package com.example.newsapp.presentation.ui.component.auth
 
-import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.AuthViewModel
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,14 +22,9 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
 
     override fun initListener() {
         binding.tvLogin.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_signUpFragment_to_signInFragment,
-                null,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.signUpFragment, true)
-                    .build()
-            )
+            findNavController().popBackStack()
         }
+
         binding.btnSignUp.setOnClickListener {
             binding.apply {
                 viewModel.signup(
@@ -54,7 +44,11 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
                     is Resource.Success -> {
                         CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
                         Log.d("TUNG", FirebaseAuth.getInstance().uid.toString())
-                        findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+                        findNavController().navigate(
+                            R.id.action_signUpFragment_to_signInFragment,
+                            null,
+                            NavOptionsConfig.getSlideAnimWithPopUpTo(R.id.signUpFragment)
+                        )
                     }
                     is Resource.Failed -> {
                         CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()

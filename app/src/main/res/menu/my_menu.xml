@@ -7,7 +7,7 @@
         android:title="Trang chủ" />
     <item
         android:id="@+id/favoriteFragment"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/love"
         android:title="Yêu thích" />
     <item
         android:id="@+id/settingFragment"

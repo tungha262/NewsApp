@@ -121,8 +121,8 @@
                         android:id="@+id/image_article"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/icon"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/default_image"
                         tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
 

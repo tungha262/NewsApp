@@ -1,15 +1,10 @@
 package com.example.newsapp.presentation.ui.component.settings
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
@@ -28,14 +23,12 @@ import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.network.NetworkConfig
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.ui.MainActivity
-import com.example.newsapp.presentation.ui.component.category.CategoryAdapter
 import com.example.newsapp.presentation.viewModel.RemoteViewModel
-import com.example.newsapp.utils.Constant.Companion.THEME
+import com.example.newsapp.utils.CustomProgress
+import com.example.newsapp.utils.CustomToast
 import com.example.newsapp.utils.DialogNetworkError
-import com.example.ui_news.util.CustomProgress
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.play.integrity.internal.ac
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -66,11 +59,48 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private var searchJob: Job? = null
 
     override fun initListener() {
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (binding.searchEditText.hasFocus()) {
+                        binding.apply {
+                            layoutContent.visibility = View.VISIBLE
+                            searchEditText.text.clear()
+                            btnCancel.visibility = View.GONE
+                            layoutDarkMode.visibility = View.VISIBLE
+
+                            searchContainer.apply {
+                                val params = layoutParams as LinearLayout.LayoutParams
+                                params.weight = 1f
+                                layoutParams = params
+                            }
+                            recyclerViewSearchResults.visibility = View.GONE
+                            tvNoData.visibility = View.GONE
+                            remoteViewModel.clearSearch()
+                            adapter.setData(emptyList())
+
+                            val view = requireActivity().currentFocus
+                            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                                    as InputMethodManager
+                            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+
+                            searchEditText.clearFocus()
+                        }
+                    } else {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                    }
+                }
+            }
+        )
+
         binding.apply {
             adapter.setOnItemClickListener { item ->
                 val action = SettingFragmentDirections
                     .actionSettingFragmentToArticleFragment(item, "")
-                findNavController().navigate(action)
+                findNavController().navigate(action, NavOptionsConfig.getSlideAnim())
             }
         }
 
@@ -153,21 +183,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             }
         }
 
-        // Lắng nghe sự kiện back
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    binding.apply {
-                        // hide keyboard
-                        val view = requireActivity().currentFocus
-                        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
-                                as InputMethodManager
-                        imm.hideSoftInputFromWindow(view?.windowToken, 0)
-                        searchEditText.clearFocus()
-                    }
-                }
-            }
-        )
+
 
         binding.recyclerViewSearchResults.apply {
             addOnScrollListener(object :
@@ -193,11 +209,10 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                             isLoadingMore = true
                             Log.d("tung", "search load more")
                             remoteViewModel.searchArticle(binding.searchEditText.text.toString())
-                        }
-                        else{
+                        } else {
                             Log.d("tung", "no internet search")
-                            networkDialog = DialogNetworkError{
-                                if(NetworkConfig.isInternetConnected(requireContext())){
+                            networkDialog = DialogNetworkError {
+                                if (NetworkConfig.isInternetConnected(requireContext())) {
                                     networkDialog?.dismiss()
                                     networkDialog = null
                                 }
@@ -218,7 +233,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         }
 
         binding.layoutAuth.setOnClickListener {
-            findNavController().navigate(R.id.action_settingFragment_to_signInFragment)
+            findNavController().navigate(
+                R.id.action_settingFragment_to_signInFragment,
+                null,
+                NavOptionsConfig.getFadeAnim()
+            )
         }
 
         binding.layoutLogout.setOnClickListener {
@@ -285,7 +304,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             .setMessage("Bạn chắc chắn muốn đăng xuất tài khoản không?")
             .setPositiveButton("Có") { _, _ ->
                 auth.signOut()
-                findNavController().navigate(R.id.settingFragment)
+                findNavController().navigate(
+                    R.id.settingFragment,
+                    null,
+                    NavOptionsConfig.getFadeAnim()
+                )
                 Log.d("tung", "log out ")
             }
             .setNegativeButton("Không", null)
@@ -311,7 +334,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                             "DialogNetworkError"
                         )
                     } else {
-                        CustomToast.makeText(requireContext(), CustomToast.FAILED, rs.message).show()
+                        CustomToast.makeText(requireContext(), CustomToast.FAILED, rs.message)
+                            .show()
                     }
                 }
 
@@ -364,25 +388,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     override fun onResume() {
         super.onResume()
         Log.d("tung", "onResume settings")
-        if(adapter.itemCount > 0){
+        if (adapter.itemCount > 0) {
             binding.apply {
                 layoutContent.visibility = View.GONE
                 binding.btnCancel.visibility = View.VISIBLE
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("tung","onDestroy settings")
+        Log.d("tung", "onDestroy settings")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d("tung","onPause settings")
-
+        Log.d("tung", "onPause settings")
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("tung","onDestroyView settings")
+        Log.d("tung", "onDestroyView settings")
     }
 }

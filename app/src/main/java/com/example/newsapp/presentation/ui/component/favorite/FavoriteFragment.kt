@@ -15,7 +15,8 @@ import com.example.newsapp.databinding.FragmentFavoriteBinding
 import com.example.newsapp.domain.state.Resource
 import com.example.newsapp.presentation.base.BaseFragment
 import com.example.newsapp.presentation.viewModel.LocalViewModel
-import com.example.ui_news.util.CustomToast
+import com.example.newsapp.utils.CustomToast
+import com.example.newsapp.utils.NavOptionsConfig
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(FragmentFavoriteB
                     item,
                     item.category[0]
                 )
-                findNavController().navigate(action)
+                findNavController().navigate(action, NavOptionsConfig.getSlideAnim())
             }
         }
     }

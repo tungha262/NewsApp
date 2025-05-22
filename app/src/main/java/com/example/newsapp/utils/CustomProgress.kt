@@ -1,8 +1,11 @@
-package com.example.ui_news.util
+@file:Suppress("DEPRECATION")
+
+package com.example.newsapp.utils
 
 import android.app.Activity
 import android.app.ProgressDialog
 import android.view.Gravity
+import android.view.WindowManager
 import com.example.newsapp.R
 
 @Suppress("DEPRECATION")
@@ -18,7 +21,7 @@ class CustomProgress {
                 setContentView(R.layout.dialog_progress)
                 window?.apply {
                     setBackgroundDrawableResource(android.R.color.transparent)
-                    clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                     setDimAmount(0f)
                     val params = attributes
                     params.gravity = Gravity.CENTER
