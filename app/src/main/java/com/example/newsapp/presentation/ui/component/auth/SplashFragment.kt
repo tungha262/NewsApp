@@ -18,7 +18,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         binding.apply {
             tvCurrentDate.text = FormatDateTime.getCurrentDate()
         }
-
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAdded) {
                 findNavController().navigate(
