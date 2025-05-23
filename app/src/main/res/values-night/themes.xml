@@ -13,7 +13,7 @@
         <item name="android:textColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/CustomBottomNav</item>
         <item name="buttonStyle">@style/button_style</item>
-
+z
     </style>
 
     <style name="button_style">

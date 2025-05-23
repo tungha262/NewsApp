@@ -42,7 +42,7 @@ class RemoteRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             when (e) {
-                is IOException -> emit(Resource.Failed("Không có kết nối mạng! ${e.localizedMessage}"))
+                is IOException -> emit(Resource.Failed("Không có kết nối mạng!"))
                 is HttpException -> emit(Resource.Failed("${e.code()}- ${e.message}"))
                 else -> emit(Resource.Failed(e.message.toString()))
             }
@@ -73,7 +73,7 @@ class RemoteRepositoryImpl @Inject constructor(
             }
         }catch (e : Exception){
             when (e) {
-                is IOException -> emit(Resource.Failed("Không có kết nối mạng! ${e.localizedMessage}"))
+                is IOException -> emit(Resource.Failed("Không có kết nối mạng!"))
                 is HttpException -> emit(Resource.Failed("${e.code()}- ${e.message}"))
                 else -> emit(Resource.Failed(e.message.toString()))
             }

@@ -91,7 +91,6 @@
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
             android:src="@drawable/empty1"
-            android:visibility="gone"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -103,7 +102,6 @@
             android:text="@string/article_empty"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:visibility="gone"
             tools:ignore="TextContrastCheck" />
     </LinearLayout>
 

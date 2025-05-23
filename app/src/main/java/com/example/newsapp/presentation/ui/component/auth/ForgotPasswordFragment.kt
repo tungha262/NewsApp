@@ -41,11 +41,7 @@ class ForgotPasswordFragment : BaseFragment<FragmentForgotPasswordBinding>
                 when(state){
                     is Resource.Success -> {
                         CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
-                        findNavController().navigate(
-                            R.id.action_forgotPasswordFragment_to_signInFragment,
-                            null,
-                            NavOptionsConfig.getSlideAnimWithPopUpTo(R.id.forgotPasswordFragment)
-                        )
+                        findNavController().popBackStack()
                     }
                     is Resource.Failed -> {
                         CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()

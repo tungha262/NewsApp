@@ -59,15 +59,13 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
                     findNavController().navigate(
                         R.id.action_signInFragment_to_homeFragment,
                         null,
-
-                        NavOptionsConfig.getSlideAnimWithPopUpTo(findNavController().graph.startDestinationId, true)
+                        NavOptionsConfig.getFadeAnimWithPopUpTo(R.id.my_nav, true)
                     )
                 }
 
                 is Resource.Failed -> {
                     CustomProgress.hide()
                     CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()
-
                 }
             }
         }

@@ -17,7 +17,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     override fun initUi() {
         adapter = NewPagerAdapter(this)
         binding.viewPager2.adapter = adapter
-        binding.viewPager2.offscreenPageLimit = 6
+        binding.viewPager2.offscreenPageLimit = 1
         TabLayoutMediator(binding.tabLayout, binding.viewPager2){ tab, pos ->
             tab.text = when(pos){
                 0 -> "Mới nhất"

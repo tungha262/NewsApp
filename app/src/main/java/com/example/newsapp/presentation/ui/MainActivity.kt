@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
+    private var isDarkMode: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,10 +37,20 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+        setColorStatusBar()
         applySavedTheme()
         setUpBottomNav()
     }
 
+    private fun setColorStatusBar() {
+        if(!isDarkMode){
+            window.statusBarColor = ContextCompat.getColor(this, R.color.status_bar_light)
+            ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars = true
+        }else{
+            window.statusBarColor = ContextCompat.getColor(this, R.color.status_bar_dark)
+            ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars = false
+        }
+    }
     private fun applySavedTheme() {
         val isDarkMode = sharedPreferenceHelper.getTheme()
         val mode = if (isDarkMode) {

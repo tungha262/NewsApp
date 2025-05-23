@@ -3,6 +3,7 @@
 
     <style name="Base.Theme.NewsApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="android:windowIsTranslucent">true</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>
         <item name="colorOnPrimary">@color/on_primary</item>
@@ -14,7 +15,7 @@
         <item name="bottomNavigationStyle">@style/CustomBottomNav</item>
         <item name="itemBackground">@color/white</item>
         <item name="buttonStyle">@style/button_style</item>
-    </style>
+    </style>z
 
 
     <!--    Favorite-->

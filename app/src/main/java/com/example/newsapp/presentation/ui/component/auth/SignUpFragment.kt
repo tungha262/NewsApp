@@ -44,11 +44,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
                     is Resource.Success -> {
                         CustomToast.makeText(requireContext(), CustomToast.SUCCESS, state.data).show()
                         Log.d("TUNG", FirebaseAuth.getInstance().uid.toString())
-                        findNavController().navigate(
-                            R.id.action_signUpFragment_to_signInFragment,
-                            null,
-                            NavOptionsConfig.getSlideAnimWithPopUpTo(R.id.signUpFragment)
-                        )
+                        findNavController().popBackStack()
                     }
                     is Resource.Failed -> {
                         CustomToast.makeText(requireContext(), CustomToast.FAILED, state.message).show()
